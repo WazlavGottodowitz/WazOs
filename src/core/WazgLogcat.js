@@ -1,5 +1,5 @@
 // =============================================
-// WazgLogcat.js - Terminal Logger
+// WazgLogcat.js - Terminal Logger (Perchance-safe)
 // =============================================
 
 window.WazgLogcat = {
@@ -22,24 +22,26 @@ window.WazgLogcat = {
       cssClass = "log-warning";
     }
 
-    const entry = `<span class="${cssClass}">[${time}] > (${type}) ${message}</span><br>`;
+    // Perchance-safe format (no square brackets)
+    const entry = `<span class="${cssClass}">(${time}) > (${type}) ${message}</span><br>`;
     
     terminal.innerHTML += entry;
 
     // Auto-scroll to bottom
     container.scrollTop = container.scrollHeight;
 
-    // Optional: Limit log lines to prevent memory bloat
-    const lines = terminal.innerHTML.split('<br>');
+    // Prevent log bloat
+    const lines = terminal.getElementsByTagName('span');
     if (lines.length > 80) {
-      terminal.innerHTML = lines.slice(-60).join('<br>');
+      terminal.innerHTML = Array.from(lines).slice(-60).map(s => s.outerHTML).join('');
     }
   }
 };
 
-// Add missing CSS class for warnings (in case it's used)
+// Add CSS classes
 const style = document.createElement('style');
 style.textContent = `
   .log-warning { color: #ffaa00; }
+  .log-alert { color: #ff4444; font-weight: bold; }
 `;
 document.head.appendChild(style);
