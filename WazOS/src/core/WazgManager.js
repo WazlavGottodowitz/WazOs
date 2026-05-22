@@ -1,36 +1,38 @@
-// wazOS Kernel & Plugin Manager
+// wazOS Kernel und Plugin Manager - STRENG PARSER-SICHER
 window.WazgManager = {
     version: "66.0",
     plugins: {},
     status: "BOOTING",
 
-    // Initialisiert das gesamte wazOS System
     init: function() {
-        console.log(`%c ⚙️ wazOS v${this.version} Core Booting... `, "background: #1e1e1e; color: #00ff00; font-family: monospace;");
+        console.log("wazOS Core Booting...");
         
-        // Boot-Reihenfolge festlegen
+        // Registriere die Kern-Sockets
         this.registerStub("WazgLogcat");
         this.registerStub("WazgGuard");
         this.registerStub("WazgHistory");
         
         this.status = "READY";
+        
         if(window.WazgLogcat) {
-            window.WazgLogcat.verbose("SYS", "wazOS erfolgreich initialisiert. Alle Sockets bereit.");
+            window.WazgLogcat.log("SYS", "wazOS Core erfolgreich initialisiert. Alle Sockets bereit.");
         }
     },
 
-    // Verhindert Abstürze: Wenn ein Modul fehlt, wird ein leeres Dummy-Objekt (Stub) erstellt
     registerStub: function(moduleName) {
         if (!window[moduleName]) {
             window[moduleName] = { isStub: true };
-            console.warn(`[WazgManager] ${moduleName} nicht gefunden. Platzhalter-Socket injiziert.`);
         } else {
             this.plugins[moduleName] = window[moduleName];
         }
     }
 };
 
-// Automatischer Boot-Trigger für Perchance
-document.addEventListener("DOMContentLoaded", () => {
-    window.WazgManager.init();
-});
+// Automatischer Trigger nach DOM-Injektion
+if (document.readyState === "complete" || document.readyState === "interactive") {
+    if(window.WazgManager) window.WazgManager.init();
+} else {
+    document.addEventListener("DOMContentLoaded", () => {
+        if(window.WazgManager) window.WazgManager.init();
+    });
+}
