@@ -1,47 +1,56 @@
-// wazOS Guard - Sicherheits-Sperren & Achsen-Locking
+// =============================================
+// WazgGuard.js - Anatomy Shield & Validation
+// =============================================
+
 window.WazgGuard = {
-    isStub: false,
-    isLocked: false,
-    lockedJoints: new Set(),
+  init: function() {
+    if (window.WazgLogcat) {
+      window.WazgLogcat.log("GUARD", "Anatomy Shield (WazgGuard) activated.");
+    }
+  },
 
-    init: function() {
-        if(window.WazgLogcat) {
-            window.WazgLogcat.log("GUARD", "Sicherheits-System aktiv. Ueberwache Touch-Inputs.");
+  // Returns true if action is allowed, false if blocked
+  validateAction: function(actionType, payload) {
+    if (!payload) return true;
+
+    switch (actionType) {
+      case 'ADD_NODE':
+        const x = payload.x || 0;
+        const y = payload.y || 0;
+
+        // Workspace boundaries (with padding)
+        if (x < 40 || x > 960 || y < 40 || y > 560) {
+          if (window.WazgLogcat) {
+            window.WazgLogcat.log("GUARD", `BLOCKED: Node ${payload.id || '?'} out of bounds (${x},${y})`);
+          }
+          return false;
         }
-    },
 
-    toggleGlobalLock: function(state) {
-        this.isLocked = (state !== undefined) ? state : !this.isLocked;
-        const statusText = this.isLocked ? "SKELETT GESPERRT (LOCK)" : "SKELETT FREIGEGEBEN";
-        
-        if(window.WazgLogcat) {
-            window.WazgLogcat.log("GUARD", statusText, this.isLocked ? "alert" : "info");
+        // Prevent nodes from spawning too close to each other
+        if (window.WazgManager && window.WazgManager.state.nodes) {
+          const tooClose = window.WazgManager.state.nodes.some(node => {
+            const dx = node.x - x;
+            const dy = node.y - y;
+            return Math.sqrt(dx * dx + dy * dy) < 48; // Minimum safe distance
+          });
+
+          if (tooClose) {
+            if (window.WazgLogcat) {
+              window.WazgLogcat.log("GUARD", `BLOCKED: Node ${payload.id || '?'} too close to existing joint`);
+            }
+            return false;
+          }
         }
-        
-        const canvas = document.getElementById("waz-svg-canvas");
-        if (canvas) {
-            canvas.style.opacity = this.isLocked ? "0.6" : "1.0";
-        }
-    },
+        break;
 
-    lockJoint: function(jointId) {
-        this.lockedJoints.add(jointId);
-        // Runde Klammern statt eckige, um Perchance-Parser-Fehler zu vermeiden!
-        if(window.WazgLogcat) window.WazgLogcat.log("GUARD", "Gelenk (" + jointId + ") gesperrt.");
-    },
+      case 'CLEAR_WORKSPACE':
+        // Always allow clear for now
+        return true;
 
-    unlockJoint: function(jointId) {
-        this.lockedJoints.delete(jointId);
-        if(window.WazgLogcat) window.WazgLogcat.log("GUARD", "Gelenk (" + jointId + ") freigegeben.");
-    },
-
-    canMove: function(jointId) {
-        if (this.isLocked) return false;
-        if (this.lockedJoints.has(jointId)) return false;
+      default:
         return true;
     }
-};
 
-if (window.WazgManager) {
-    window.WazgManager.registerStub("WazgGuard");
-}
+    return true;
+  }
+};
