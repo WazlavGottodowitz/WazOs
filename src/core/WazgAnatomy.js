@@ -3,19 +3,29 @@ window.WazgAnatomy = {
 
   init: function() {
     this.canvas = document.getElementById("waz-svg-canvas");
-    if (!this.canvas) {
-      if (window.WazgLogcat) window.WazgLogcat.log("ERROR", "SVG-Canvas nicht gefunden!");
-      return;
-    }
-    if (window.WazgLogcat) {
-      window.WazgLogcat.log("ANATOMY", "Biomechanik-Engine bereit.");
+    
+    if (window.WazgManager) {
+      // Beim Manager anmelden! Sobald sich was ändert, render() aufrufen.
+      window.WazgManager.subscribe((state) => this.render(state));
+      if (window.WazgLogcat) window.WazgLogcat.log("ANATOMY", "Biomechanik-Engine an Manager gekoppelt.");
     }
   },
 
-  drawJoint: function(x, y, label = "Joint") {
+  render: function(state) {
     if (!this.canvas) return;
 
-    // Erstelle den Kreis (das Gelenk)
+    // 1. RADIKAL: Alles löschen. Kein Patchworking auf dem Canvas.
+    this.canvas.innerHTML = '';
+
+    // 2. Alle Knotenpunkte aus dem State zeichnen
+    state.nodes.forEach(node => {
+      this.drawJoint(node.x, node.y, node.id);
+    });
+  },
+
+  drawJoint: function(x, y, id) {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
     const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circle.setAttribute("cx", x);
     circle.setAttribute("cy", y);
@@ -23,31 +33,17 @@ window.WazgAnatomy = {
     circle.setAttribute("fill", "#111");
     circle.setAttribute("stroke", "#00ff00");
     circle.setAttribute("stroke-width", "2");
-    circle.style.cursor = "pointer";
 
-    // Klick-Event für das Gelenk (Feedback ans System)
-    circle.onclick = () => {
-      if (window.WazgManager) {
-        window.WazgManager.triggerAction('SELECT_NODE', { id: label });
-      }
-    };
-
-    // Erstelle das Label (Text)
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", x);
     text.setAttribute("y", y - 25);
     text.setAttribute("fill", "#00ff00");
     text.setAttribute("font-size", "10px");
-    text.setAttribute("font-family", "monospace");
     text.setAttribute("text-anchor", "middle");
-    text.textContent = label;
+    text.textContent = id;
 
-    // Auf die Leinwand werfen
-    this.canvas.appendChild(circle);
-    this.canvas.appendChild(text);
-
-    if (window.WazgLogcat) {
-      window.WazgLogcat.log("ANATOMY", `Knotenpunkt [${label}] bei ${x}/${y} gespawnt.`);
-    }
+    group.appendChild(circle);
+    group.appendChild(text);
+    this.canvas.appendChild(group);
   }
 };
