@@ -1,0 +1,126 @@
+===============================================================================
+                          wazOS SYSTEM-ARCHITEKTUR & PROTOKOLL
+                       Version v66.0 - Mobile/Desktop Core Engine
+===============================================================================
+
+1. FRAMEWORK & UI-ORCHESTRIERUNG (WazgLayout)
+-------------------------------------------------------------------------------
+Das System löst das klassische Präzision-vs.-Platz-Dilemma auf mobilen Geräten 
+durch ein hochadaptives Interface. Statt starrer Menüs wechselt das Layout 
+dynamisch zwischen einem Desktop-Sidebar-Modus und einem mobilen Floating/Bottom-
+Sheet-Interface.
+
+Zentrale Features:
+- Master Toggle: Ein globaler, im SVG-Header verankerter Schalter blendet mit 
+  einem Klick das gesamte Interface aus (Zen-Modus), um maximale Sicht auf das 
+  Arbeitsfeld zu gewährleisten.
+- Auto-Toggle (7-Sekunden-Regel): Wird die GUI auf mobilen Endgeräten für 7 
+  Sekunden nicht berührt, reduziert sich ihre Opacity automatisch auf 10%. Dadurch 
+  wird der Arbeitsbereich maximal vergrößert. Die GUI bleibt minimal sichtbar, 
+  wobei kritische Master-Toggles weiterhin aktivierbar sind.
+- Skalierbarkeit: Über einen feinen, via Guard geschützten Slider lässt sich die 
+  gesamte GUI von 50% bis 150% skalieren. Bei Erhöhung des Skalierungsfaktors 
+  rücken die Steuerelemente automatisch dichter an die Bildschirmränder, um das 
+  Zentrum frei für das Rig zu halten.
+- Emoji-Shape Hitboxes: Die Benutzeroberfläche nutzt Emojis als universelle, 
+  platzsparende Icons. Die Klickflächen beschränken sich nicht auf Quadrate, 
+  sondern nutzen die exakten Konturen/Grenzpfade der Emojis als Hitboxen. 
+  Ein Long-Press auf ein Emoji triggert einen Tooltip aus dem Logcat-Modul.
+
+2. SICHERHEITS-SPERRE & PRÄZISION (WazgGuard & WazgInput)
+-------------------------------------------------------------------------------
+Um versehentliche Berührungen ("Accidental Touch") beim Zoomen, Pannen oder 
+während schnellen Interaktionen zu verhindern, greifen spezialisierte Sperren.
+
+Zentrale Features:
+- Global Rig Lock: Einfrieren des kompletten Skeletts. Der Canvas kann skaliert 
+  und verschoben werden, ohne die Pose zu verändern.
+- Selektives Locking: Einzelne Gelenkketten (z. B. Beine) können isoliert fixiert 
+  werden, während der Rest des Körpers transformiert wird.
+- Deep Lock: Während der KI-Generierung (Vortex-Call) friert das Rig automatisch 
+  ein und verfärbt sich grau (visuelles Feedback). Ein manueller Bypass erlaubt 
+  es, diesen Zustand jederzeit zu brechen, um Prompts abzubrechen oder zu ändern.
+- Harmonisches Echo (Touch-Offset): Da Finger auf Touchscreens die Gelenkpunkte 
+  verdecken, springt die visuelle Kontrollanzeige bei Berührung um einen festen 
+  vertikalen Offset (ca. 50px) nach oben. 
+- Visueller Puls: Das aktive Gelenk wird durch einen extrem weichen, langsam 
+  atmenden Nordlicht-Effekt (Mint-Grün #ccffcc auf CRT-Basis) dargestellt. Ein 
+  hauchdünnes, dunkelgrünes Fadenkreuz zeigt die präzisen Vektorachsen an.
+
+3. RE- UND UNDO-ENGINE (WazgHistory)
+-------------------------------------------------------------------------------
+Ein Kurzzeitgedächtnis, das speziell auf RAM-Effizienz für mobile Browser 
+optimiert ist.
+
+Zentrale Features:
+- Snapshot-Logik: Das System speichert bei jedem Loslassen eines Gelenks 
+  (touchend/mouseup) sowie vor jedem Vortex-KI-Call den kompletten Systemzustand 
+  (Koordinaten, Seeds, Metadaten) als kompakten JSON-String statt schwerer Bitmaps.
+- 10-Step Ring-Buffer: Sobald der elfte Schritt erfolgt, wird der älteste Zustand 
+  gelöscht.
+- Visuelles Feedback: Ist der Stack leer, wird der Undo-Button in der SVG-GUI 
+  automatisch per CSS ausgegraut. Ein Zurückspringen nach einer unvollständigen 
+  oder misslungenen KI-Generierung ist sofort möglich.
+
+4. INFEKTIONS-SCHUTZ & PLUGIN-MANAGEMENT (WazgManager)
+-------------------------------------------------------------------------------
+Der WazgManager kontrolliert die Integrität der gesamten Logikkette und fungiert 
+als dynamisches Betriebssystem.
+
+Zentrale Features:
+- Real-Time Check & Auto-Import: Beim Booten scannt der Manager den globalen 
+  Namespace. Erkennt das System fehlende Glieder in der Kette (z. B. wenn 
+  Chronos vorhanden ist, aber der Sequenzer fehlt), lädt der Manager das Modul 
+  automatisch von definierten URLs nach.
+- Injektion von Stubs (Virtual Sockets): Kann ein Plugin nicht geladen werden, 
+  wird ein funktionsfähiges Dummy-Objekt (Stub) injiziert, das den Absturz des 
+  Generators verhindert und das System lauffähig hält.
+- Smart-Bridge & Polyfills: Bei Inkompatibilitäten zwischen alten Experimenten 
+  und neuen Modulen generiert die integrierte KI on-the-fly funktionale Wrapper, 
+  um veraltete Methoden zu adaptieren, ohne den Originalcode zu verschmelzen.
+
+5. BIOMECHANIK, ANATOMIE & KREATUREN-BAUKASTEN (WazgAnatomy & MovementPattern)
+-------------------------------------------------------------------------------
+Das Rig-System löst sich von starren Animationen und wechselt zu biologisch 
+kontextsensitiven Grenzwerten.
+
+Zentrale Features:
+- Anatomical Constraints: Gelenke besitzen feste Rotations-, Flexions- und 
+  Extensions-Limits (z. B. Knie biegt sich nicht nach vorne). Diese Grenzwerte 
+  können über einen GUI-Bypass für "Body Horror" oder Comic-Styles ausgehebelt werden.
+- Normal-Ratios (Goldener Schnitt): Wird die Größe eines Hauptgelenks (z. B. Kopf) 
+  verändert, skalieren verbundene Elemente (Schultern, Hüfte) automatisch im 
+  korrekten biologischen Verhältnis mit.
+- Inverse Kinematik & Smart Mirror: Bewegungen einer Seite spiegeln sich 
+  automatisch auf die Gegenseite. Diese Bindung kann für asymmetrische Posen 
+  jederzeit gelöst werden.
+- Auto-Balancing: Kinetische Bewegungen berechnen Massenverschiebungen in Echtzeit. 
+  Wird ein Fuß angehoben, neigen sich Hüfte und Wirbelsäule automatisch, um den 
+  Schwerpunkt zu stabilisieren.
+- Modulare Monster-Konstruktion (WazgLab): Durch die granulare Aufteilung der 
+  Gelenke in Plugins lassen sich komplexe Strukturen wie vierarmige Wesen (Goro-Typ) 
+  oder mehrköpfige Rigs (Hydra) zusammenstecken. 
+- Evolved Movement Patterns: Bei unbekannten oder asymmetrischen Kreaturen simuliert 
+  das System im Hintergrund Bewegungsabläufe, um die effizienteste Schrittfolge 
+  und Gewichtsverlagerung vollautomatisch als Preset zu generieren.
+
+6. TERMINAL, SENSEI-GUIDE & SYSTEM-PANIK (WazgLogcat & WazgGuide)
+-------------------------------------------------------------------------------
+Mobiles Debugging und Benutzerführung ohne externe Developer-Tools.
+
+Zentrale Features:
+- CRT-Scanline Konsole: Im Footer befindet sich ein simulierter Röhrenmonitor-Slot 
+  (#00ff00 auf #1e1e1e) mit blinkendem Cursor und Schreibmaschinen-Boot-Sequenz. 
+  Sie fängt native Konsolenausgaben ab und verarbeitet direkte Befehle.
+- Sensei-Modus: Einzeilige, via Checkbox steuerbare Laufschrift (Ticker) im Header. 
+  Sie erklärt dem Nutzer in Echtzeit, welche biomechanische Kette er gerade bewegt 
+  oder was das System im Hintergrund berechnet.
+- System-Panik & Warnleuchte: Bei gravierenden Fehlern (z. B. totaler Einsturz der 
+  anatomischen Integrität oder KI-Halluzinationen) wechselt das System in den 
+  Alarmzustand. Ein Conic-Gradient simuliert ein rotes, rotierendes Rundumlicht, 
+  das über die GUI wischt. Der Ticker beschleunigt in Alarm-Rot.
+- Deep-Corruption Glitch: Nur bei extremen Daten-Abweichungen zerfällt das generierte 
+  Bild temporär durch RGB-Splits, Zeilenrauschen und Block-Shuffling, bevor 
+  über den "Self-Heal"-Button ein automatischer Reset zum letzten sicheren 
+  Snapshot durchgeführt wird.
+===============================================================================
