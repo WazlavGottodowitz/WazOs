@@ -1,38 +1,55 @@
-// wazOS Kernel und Plugin Manager - STRENG PARSER-SICHER
 window.WazgManager = {
-    version: "66.0",
-    plugins: {},
-    status: "BOOTING",
+  state: {
+    isReady: false,
+    history: [],
+    maxHistory: 10
+  },
 
-    init: function() {
-        console.log("wazOS Core Booting...");
-        
-        // Registriere die Kern-Sockets
-        this.registerStub("WazgLogcat");
-        this.registerStub("WazgGuard");
-        this.registerStub("WazgHistory");
-        
-        this.status = "READY";
-        
-        if(window.WazgLogcat) {
-            window.WazgLogcat.log("SYS", "wazOS Core erfolgreich initialisiert. Alle Sockets bereit.");
-        }
-    },
-
-    registerStub: function(moduleName) {
-        if (!window[moduleName]) {
-            window[moduleName] = { isStub: true };
-        } else {
-            this.plugins[moduleName] = window[moduleName];
-        }
+  init: function() {
+    this.state.isReady = true;
+    if (window.WazgLogcat) {
+      window.WazgLogcat.log("SYSTEM", "WazOS Manager v66.0 Kernel online.");
     }
-};
+  },
 
-// Automatischer Trigger nach DOM-Injektion
-if (document.readyState === "complete" || document.readyState === "interactive") {
-    if(window.WazgManager) window.WazgManager.init();
-} else {
-    document.addEventListener("DOMContentLoaded", () => {
-        if(window.WazgManager) window.WazgManager.init();
-    });
-}
+  // Globale Event-Brücke: Layout ruft dies auf, Manager steuert Anatomy
+  triggerAction: function(actionType, payload) {
+    if (!this.state.isReady) return;
+    
+    // History mitschreiben
+    this.saveToHistory(actionType);
+
+    if (window.WazgLogcat) {
+      window.WazgLogcat.log("MANAGER", `Action empfangen: [${actionType}]`);
+    }
+
+    // Aktionen verteilen
+    switch(actionType) {
+      case 'SPAWN_NODE':
+        if (window.WazgAnatomy) {
+          window.WazgAnatomy.drawJoint(payload.x, payload.y, payload.label);
+        } else {
+          window.WazgLogcat.log("ERROR", "Anatomy-Modul offline.");
+        }
+        break;
+      case 'UNDO':
+        this.undoLastAction();
+        break;
+      default:
+        window.WazgLogcat.log("WARNING", `Unbekannte Aktion: ${actionType}`);
+    }
+  },
+
+  saveToHistory: function(action) {
+    this.state.history.push(action);
+    if (this.state.history.length > this.state.maxHistory) {
+      this.state.history.shift(); // Älteste Aktion vergessen (10-Step-Limit)
+    }
+  },
+
+  undoLastAction: function() {
+    if (window.WazgLogcat) {
+      window.WazgLogcat.log("MANAGER", "Self-Healing: UNDO ausgelöst (noch nicht implementiert).");
+    }
+  }
+};
