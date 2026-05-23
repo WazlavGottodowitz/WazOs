@@ -1,47 +1,58 @@
 window.WazgManager = {
   state: { nodes: [], connections: [], draggingId: null },
-  pipeline: [], // Deine VST-FX-Kette
+  pipeline: [],
 
   init: function() {
-    // Finde alle isg_-Module im System
-    const modules = Object.keys(window).filter(k => k.startsWith("isg_"));
-    
-    // EINSTELLBARE KETTE: Hier definierst du das Routing!
-    // Du kannst die Reihenfolge hier jederzeit ändern.
-    const chain = ['isg_001_guard', 'isg_002_rig_processor', 'isg_003_mutation_fx'];
-    
-    this.pipeline = chain.map(name => window[name]).filter(p => p);
+    // Liste der aktiven Module in der Pipeline (Reihenfolge = Signalfluss)
+    const chain = ['isg_001_guard', 'isg_002_rig_processor', 'isg_005_zappel_fx'];
+
+    this.pipeline = chain
+      .map(name => window[name])
+      .filter(p => p);
+
     this.pipeline.forEach(p => { if (p.init) p.init(this); });
     
-    if (window.WazgLogcat) window.WazgLogcat.log("SYSTEM", "VST-Signal-Bus initialisiert.");
+    if (window.WazgLogcat) window.WazgLogcat.log("SYSTEM", "VST-Bus Architektur aktiv.");
   },
 
   dispatch: function(actionType, payload) {
     let signal = payload;
 
-    // SIGNALFLUSS: Das Signal wandert durch die gesamte Kette
+    // Signal durch die FX-Kette schleusen
     for (let plugin of this.pipeline) {
       if (plugin.process) {
-        // Das Plugin erhält das aktuelle Signal und darf es verändern
         const result = plugin.process(actionType, signal, this.state);
-        
-        // Wenn ein Plugin 'false' zurückgibt -> Signal gemutet (Blockiert)
-        if (result === false) return; 
-        
-        // Wenn ein Plugin neue Daten zurückgibt -> Signal wird transformiert
-        if (result !== undefined) signal = result;
+        if (result === false) return; // Mute / Blockiert
+        if (result !== undefined) signal = result; // Transformation
       }
     }
 
-    // STATE UPDATE (nachdem alle FX drüber gelaufen sind)
+    // Anwendung des transformierten Signals
     this.applyState(actionType, signal);
     this.notify();
   },
 
   applyState: function(type, data) {
-    // Hier passiert die eigentliche Änderung im State...
-    // (switch-case Logik wie gehabt)
+    switch(type) {
+      case 'DRAG_MOVE':
+        const node = this.state.nodes.find(n => n.id === this.state.draggingId);
+        if (node) { node.x = data.x; node.y = data.y; }
+        break;
+      case 'ADD_NODE':
+        this.state.nodes.push(data);
+        break;
+      case 'DRAG_START':
+        this.state.draggingId = data.id;
+        break;
+      case 'DRAG_END':
+        this.state.draggingId = null;
+        break;
+    }
   },
 
-  notify: function() { /* ... */ }
+  notify: function() {
+    this.listeners.forEach(l => l(this.state));
+  },
+  
+  listeners: []
 };
