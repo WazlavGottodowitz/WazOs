@@ -1,9 +1,10 @@
 window.WazgManager = {
   state: { nodes: [], connections: [], draggingId: null },
   pipeline: [],
+  onUpdate: null, // Der direkte Hook für WazgAnatomy
 
   init: function() {
-    // Liste der aktiven Module in der Pipeline (Reihenfolge = Signalfluss)
+    // Das Rack: Hier definierst du die Reihenfolge deiner Plugins
     const chain = ['isg_001_guard', 'isg_002_rig_processor', 'isg_005_zappel_fx'];
 
     this.pipeline = chain
@@ -18,16 +19,16 @@ window.WazgManager = {
   dispatch: function(actionType, payload) {
     let signal = payload;
 
-    // Signal durch die FX-Kette schleusen
+    // VST-Pipeline durchlaufen
     for (let plugin of this.pipeline) {
       if (plugin.process) {
         const result = plugin.process(actionType, signal, this.state);
-        if (result === false) return; // Mute / Blockiert
-        if (result !== undefined) signal = result; // Transformation
+        if (result === false) return; // Mute
+        if (result !== undefined) signal = result; // Modifikation
       }
     }
 
-    // Anwendung des transformierten Signals
+    // State Update
     this.applyState(actionType, signal);
     this.notify();
   },
@@ -38,21 +39,13 @@ window.WazgManager = {
         const node = this.state.nodes.find(n => n.id === this.state.draggingId);
         if (node) { node.x = data.x; node.y = data.y; }
         break;
-      case 'ADD_NODE':
-        this.state.nodes.push(data);
-        break;
-      case 'DRAG_START':
-        this.state.draggingId = data.id;
-        break;
-      case 'DRAG_END':
-        this.state.draggingId = null;
-        break;
+      case 'DRAG_START': this.state.draggingId = data.id; break;
+      case 'DRAG_END': this.state.draggingId = null; break;
+      case 'ADD_NODE': this.state.nodes.push(data); break;
     }
   },
 
   notify: function() {
-    this.listeners.forEach(l => l(this.state));
-  },
-  
-  listeners: []
+    if (this.onUpdate) this.onUpdate(this.state);
+  }
 };
