@@ -1,0 +1,21 @@
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
