@@ -4,15 +4,17 @@ window.WazgManager = {
   onUpdate: null,
 
   init: function() {
+    // Definierte FX-Kette
     const chain = ['isg_001_guard', 'isg_002_rig_processor', 'isg_005_zappel_fx'];
     this.pipeline = chain.map(name => window[name]).filter(p => p);
     this.pipeline.forEach(p => { if (p.init) p.init(this); });
+    console.log("SYSTEM: VST-Bus aktiv.");
   },
 
   dispatch: function(actionType, payload) {
     let signal = payload;
 
-    // VST-Bus Pipeline
+    // 1. VST-Pipeline abarbeiten
     for (let plugin of this.pipeline) {
       if (plugin.process) {
         const result = plugin.process(actionType, signal, this.state);
@@ -21,12 +23,11 @@ window.WazgManager = {
       }
     }
 
-    // Zentrale Logik für State-Mutationen
+    // 2. State-Mutationen
     switch(actionType) {
       case 'ADD_NODE':
         const newNode = { id: Date.now(), x: signal.x, y: signal.y };
         this.state.nodes.push(newNode);
-        // Automatischer Bone zum letzten Knoten
         if (this.state.nodes.length > 1) {
           const prev = this.state.nodes[this.state.nodes.length - 2];
           this.state.connections.push({ from: prev.id, to: newNode.id });
@@ -43,10 +44,14 @@ window.WazgManager = {
       case 'DRAG_START': this.state.draggingId = signal.id; break;
       case 'DRAG_END': this.state.draggingId = null; break;
     }
+
+    // 3. Renderer benachrichtigen
     this.notify();
   },
 
   notify: function() {
-    if (this.onUpdate) this.onUpdate(this.state);
+    if (typeof this.onUpdate === 'function') {
+      this.onUpdate(this.state);
+    }
   }
 };
