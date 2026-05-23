@@ -1,5 +1,6 @@
 <script src="src/core/WazgLogcat.js"></script>
-  <script src="src/core/WazgGuard.js"></script>  <script src="src/core/WazgManager.js"></script>
+  <script src="src/core/WazgGuard.js"></script> 
+  <script src="src/core/WazgManager.js"></script>
   <script src="src/core/WazgAnatomy.js"></script>
   <script src="src/ui/WazgLayout.js"></script>
 
