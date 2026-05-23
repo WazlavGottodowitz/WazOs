@@ -1,37 +1,24 @@
 <!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>WazOs - Biomechanik VST-Bus</title>
-    <style>
-        body { background: #111; color: #0f0; font-family: monospace; }
-        #waz-svg-canvas { width: 100vw; height: 70vh; border: 1px solid #333; }
-        .controls { display: flex; gap: 10px; padding: 20px; }
-        button { background: #222; color: #0f0; border: 1px solid #0f0; padding: 10px; cursor: pointer; }
-    </style>
-</head>
+<html>
 <body>
-
-    <div class="controls">
-        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: Math.random()*300, y: Math.random()*300})">ADD JOINT</button>
-        <button onclick="window.WazgManager.dispatch('CLEAR_WORKSPACE', null)">CLEAR ALL</button>
+    <div id="controls">
+        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: 100, y: 100})">ADD NODE</button>
+        <button onclick="window.WazgManager.dispatch('CLEAR_WORKSPACE', null)">CLEAR</button>
     </div>
-
-    <svg id="waz-svg-canvas"></svg>
+    <svg id="waz-svg-canvas" style="width:100%; height:80vh; border:1px solid #0f0;"></svg>
 
     <script src="src/core/WazgManager.js"></script>
     <script src="src/core/WazgAnatomy.js"></script>
-    
-    <script src="src/plugins/isg_001_guard.js"></script>
-    <script src="src/plugins/isg_002_rig_processor.js"></script>
-    <script src="src/plugins/isg_005_zappel_fx.js"></script>
-
     <script>
-        // Startschuss: Initialisiere alles, sobald der Browser bereit ist
         window.onload = () => {
-            window.WazgManager.init();
-            window.WazgAnatomy.init();
-            console.log("WazOs gestartet: VST-Bus verbunden.");
+            try {
+                console.log("INIT: Starte System...");
+                window.WazgAnatomy.init();
+                window.WazgManager.init();
+                console.log("INIT: Erfolg.");
+            } catch (e) {
+                console.error("INIT: FATALER FEHLER", e);
+            }
         };
     </script>
 </body>
