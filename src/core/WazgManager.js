@@ -4,25 +4,40 @@ window.WazgManager = {
   onUpdate: null,
 
   init: function() {
-    const chain = ['isg_001_guard', 'isg_002_rig_processor', 'isg_005_zappel_fx'];
+    // Logger muss hier in der Kette stehen
+    const chain = ['isg_001_guard', 'isg_002_rig_processor', 'isg_005_zappel_fx', 'isg_997_WazLogger'];
+    
     this.pipeline = chain.map(name => window[name]).filter(p => p);
-    this.pipeline.forEach(p => { if (p.init) p.init(this); });
+    
+    // Initialisierung der Plugins
+    this.pipeline.forEach(p => { 
+        if (p.init) p.init(this); 
+    });
+    
     console.log("SYSTEM: VST-Bus aktiv.");
   },
 
   dispatch: function(actionType, payload) {
     let signal = payload || { x: 100, y: 100 };
 
+    // Plugin-Pipeline durchlaufen
     for (let plugin of this.pipeline) {
       if (plugin.process) {
         try {
           const result = plugin.process(actionType, signal, this.state);
           if (result === false) return;
           if (result && typeof result.x === 'number') signal = result;
-        } catch (e) { console.error("Plugin Error:", e); }
+        } catch (e) { 
+          // Hier greift jetzt dein Logger, falls er geladen wurde!
+          if (window.isg_997_WazLogger) {
+              window.isg_997_WazLogger.log("Plugin Error: " + e.message);
+          }
+          console.error("Plugin Error:", e); 
+        }
       }
     }
 
+    // State Updates
     switch(actionType) {
       case 'ADD_NODE':
         const newNode = { id: Date.now(), x: signal.x, y: signal.y };
@@ -43,6 +58,7 @@ window.WazgManager = {
       case 'DRAG_START': this.state.draggingId = signal.id; break;
       case 'DRAG_END': this.state.draggingId = null; break;
     }
+    
     if (this.onUpdate) this.onUpdate(this.state);
   }
 };
