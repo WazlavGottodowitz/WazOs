@@ -1,0 +1,29 @@
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Navigated to https://wazlavgottodowitz.github.io/WazOs/
+WazgManager.js:11 SYSTEM: VST-Bus aktiv.
+WazgAnatomy.js:8 Anatomy: Hook gesetzt.
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Navigated to https://wazlavgottodowitz.github.io/WazOs/
+WazgManager.js:11 SYSTEM: VST-Bus aktiv.
+WazgAnatomy.js:8 Anatomy: Hook gesetzt.
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
