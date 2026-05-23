@@ -1,37 +1,26 @@
-window.WazgGuard = {
-  // Biomechanische Limits
-  MAX_BONE_LENGTH: 250,
+<script src="src/core/WazgLogcat.js"></script>
+  <script src="src/core/WazgGuard.js"></script>  <script src="src/core/WazgManager.js"></script>
+  <script src="src/core/WazgAnatomy.js"></script>
+  <script src="src/ui/WazgLayout.js"></script>
 
-  init: function() {
-    if (window.WazgLogcat) {
-      window.WazgLogcat.log("GUARD", "Anatomy Shield online. Knochen-Riss-Limit: 250px.");
-    }
-  },
-
-  // Prüft, ob eine Bewegung legal ist
-  isMoveLegal: function(nodeId, newX, newY, state) {
-    // Finde alle Knochen (Connections), an denen dieser Knoten hängt
-    const relatedConnections = state.connections.filter(c => c.source === nodeId || c.target === nodeId);
-
-    for (let conn of relatedConnections) {
-      // Finde den jeweiligen Partner-Knoten am anderen Ende des Knochens
-      const partnerId = (conn.source === nodeId) ? conn.target : conn.source;
-      const partnerNode = state.nodes.find(n => n.id === partnerId);
-
-      if (partnerNode) {
-        // Berechne die Distanz (Satz des Pythagoras)
-        const dx = partnerNode.x - newX;
-        const dy = partnerNode.y - newY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Wenn die Distanz das Limit überschreitet, blockiere die Bewegung
-        if (distance > this.MAX_BONE_LENGTH) {
-          if (window.WazgLogcat) window.WazgLogcat.log("ALERT", `Guard blockiert! Knochen würde bei ${Math.round(distance)}px reißen.`);
-          return false;
-        }
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        if (window.WazgLogcat) window.WazgLogcat.log("BOOT", "Module geladen. Starte Zündung...");
+        
+        if (window.WazgGuard) window.WazgGuard.init();    // NEU HINZUGEFÜGT
+        if (window.WazgManager) window.WazgManager.init();
+        if (window.WazgAnatomy) window.WazgAnatomy.init();
+        if (window.WazgLayout) window.WazgLayout.init();
+        
+        if (window.WazgLogcat) window.WazgLogcat.log("SYSTEM", "WazOs erfolgreich gebootet. Bereit für Input.");
+      } catch (error) {
+        console.error(error);
+        const term = document.getElementById("waz-terminal-text");
+        if(term) term.innerHTML += `\n<span class="log-alert">🚨 KERNEL-PANIK: ${error.message}</span>`;
       }
-    }
-    
-    return true; // Bewegung ist im legalen Rahmen
-  }
-};
+    });
+  </script>
+
+</body>
+</html>
