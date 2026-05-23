@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WazOs Core Interface</title>
+  <style>
+    /* Globales CRT & Core Styling */
+    body, html {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background-color: #1e1e1e; font-family: 'Courier New', Courier, monospace; overflow: hidden;
+    }
+    #waz-container { position: relative; width: 100%; height: 100vh; overflow: hidden; box-sizing: border-box; }
+    
+    /* TOPHEADER & TICKER LAUFBAND */
+    #waz-header { width: 100%; height: 50px; border-bottom: 1px solid #004400; background: #1a1a1a; box-sizing: border-box; }
+    .guide-label { color: #00ff00; font-size: 11px; padding: 5px 10px; display: inline-block; cursor: pointer; }
+    .ticker-wrapper { width: 100%; overflow: hidden; background: #111; height: 20px; border-top: 1px solid #002200; }
+    #ticker-text { color: #00cc00; font-size: 12px; line-height: 20px; }
+    
+    /* WORKSPACE (Rig-Spielfeld) */
+    #waz-workspace { width: 100%; height: calc(100vh - 150px); position: relative; background: #151515; }
+    
+    /* LOGCAT TERMINAL FOOTER */
+    #waz-terminal {
+      width: 100%; height: 100px; background: rgba(26, 26, 26, 0.95); border-top: 2px solid #00ff00;
+      position: absolute; bottom: 0; left: 0; overflow-y: auto; z-index: 1000; box-sizing: border-box;
+      box-shadow: 0 -5px 15px rgba(0, 255, 0, 0.1);
+    }
+    #waz-terminal-text { width: 100%; height: 100%; padding: 8px; font-size: 11px; color: #00ff00; box-sizing: border-box; white-space: pre-wrap; }
+    .log-info { color: #00ff00; margin-bottom: 2px; }
+    .log-alert { color: #ff0000; font-weight: bold; text-shadow: 0 0 5px #ff0000; margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+
+  <div id="waz-container">
+    <div id="waz-header">
+      <label class="guide-label">
+        <input type="checkbox" id="chk-guide" checked onchange="document.getElementById('ticker-text').style.display = this.checked ? 'block' : 'none'"> 🧠 GUIDE
+      </label>
+      <div class="ticker-wrapper">
+        <marquee id="ticker-text" scrollamount="3">WazOs v66.0 geladen. Data-Driven Mode aktiv.</marquee>
+      </div>
+    </div>
+
+    <div id="waz-workspace">
+      <svg id="waz-svg-canvas" width="100%" height="100%" style="position:absolute; top:0; left:0;"></svg>
+    </div>
+
+    <div id="waz-terminal">
+      <div id="waz-terminal-text">> (BOOT) Initialisiere System...</div>
+    </div>
+  </div>
+
+  <script src="src/core/WazgLogcat.js"></script>
+  <script src="src/core/WazgManager.js"></script>
+  <script src="src/core/WazgAnatomy.js"></script>
+  <script src="src/ui/WazgLayout.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        if (window.WazgLogcat) window.WazgLogcat.log("BOOT", "Module geladen. Starte Zündung...");
+        
+        if (window.WazgManager) window.WazgManager.init();
+        if (window.WazgAnatomy) window.WazgAnatomy.init();
+        if (window.WazgLayout) window.WazgLayout.init();
+        
+        if (window.WazgLogcat) window.WazgLogcat.log("SYSTEM", "WazOs erfolgreich gebootet. Bereit für Input.");
+      } catch (error) {
+        console.error(error);
+        const term = document.getElementById("waz-terminal-text");
+        if(term) term.innerHTML += `\n<span class="log-alert">🚨 KERNEL-PANIK: ${error.message}</span>`;
+      }
+    });
+  </script>
+
+</body>
+      </html>
