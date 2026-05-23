@@ -1,0 +1,177 @@
+WazgManager.js:11 SYSTEM: VST-Bus aktiv.
+WazgAnatomy.js:8 Anatomy: Hook gesetzt.
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cx: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+Error: <circle> attribute cy: Expected length, "NaN".
+WazgAnatomy.js:21 Error: <line> attribute x1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute y1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute x2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute y2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute x1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute y1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute x2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute y2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute x1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute y1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute x2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute y2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute x1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:21 Error: <line> attribute y1: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:21
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute x2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:22 Error: <line> attribute y2: Expected length, "NaN".
+(anonymous) @ WazgAnatomy.js:22
+render @ WazgAnatomy.js:16
+window.WazgAnatomy.init.window.WazgManager.onUpdate @ WazgAnatomy.js:7
+notify @ WazgManager.js:54
+dispatch @ WazgManager.js:49
+onclick @ WazOs/:16
+WazgAnatomy.js:8 Anatomy: Hook gesetzt.
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Navigated to https://wazlavgottodowitz.github.io/WazOs/
+WazgAnatomy.js:8 Anatomy: Hook gesetzt.
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Navigated to https://wazlavgottodowitz.github.io/WazOs/
+isg_005_zappel_fx.js:4 Uncaught TypeError: Cannot read properties of null (reading 'x')
+    at Object.process (isg_005_zappel_fx.js:4:24)
+    at Object.dispatch (WazgManager.js:18:29)
+    at HTMLButtonElement.onclick (WazOs/:17:99)
+process @ isg_005_zappel_fx.js:4
+dispatch @ WazgManager.js:18
+onclick @ WazOs/:17
+isg_005_zappel_fx.js:4 Uncaught TypeError: Cannot read properties of null (reading 'x')
+    at Object.process (isg_005_zappel_fx.js:4:24)
+    at Object.dispatch (WazgManager.js:18:29)
+    at HTMLButtonElement.onclick (WazOs/:17:99)
+process @ isg_005_zappel_fx.js:4
+dispatch @ WazgManager.js:18
+onclick @ WazOs/:17
+isg_005_zappel_fx.js:4 Uncaught TypeError: Cannot read properties of null (reading 'x')
+    at Object.process (isg_005_zappel_fx.js:4:24)
+    at Object.dispatch (WazgManager.js:18:29)
+    at HTMLButtonElement.onclick (WazOs/:17:99)
+process @ isg_005_zappel_fx.js:4
+dispatch @ WazgManager.js:18
+onclick @ WazOs/:17
+isg_005_zappel_fx.js:4 Uncaught TypeError: Cannot read properties of null (reading 'x')
+    at Object.process (isg_005_zappel_fx.js:4:24)
+    at Object.dispatch (WazgManager.js:18:29)
+    at HTMLButtonElement.onclick (WazOs/:17:99)
+process @ isg_005_zappel_fx.js:4
+dispatch @ WazgManager.js:18
+onclick @ WazOs/:17
+isg_005_zappel_fx.js:4 Uncaught TypeError: Cannot read properties of null (reading 'x')
+    at Object.process (isg_005_zappel_fx.js:4:24)
+    at Object.dispatch (WazgManager.js:18:29)
+    at HTMLButtonElement.onclick (WazOs/:17:99)
+process @ isg_005_zappel_fx.js:4
+dispatch @ WazgManager.js:18
+onclick @ WazOs/:17
+WazgAnatomy.js:8 Anatomy: Hook gesetzt.
+WazOs/:34 WazOs gestartet: VST-Bus verbunden.
+Navigated to https://wazlavgottodowitz.github.io/WazOs/
