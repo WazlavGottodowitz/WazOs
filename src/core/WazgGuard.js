@@ -1,56 +1,37 @@
-// =============================================
-// WazgGuard.js - Anatomy Shield & Validation
-// =============================================
-
 window.WazgGuard = {
+  // Biomechanische Limits
+  MAX_BONE_LENGTH: 250,
+
   init: function() {
     if (window.WazgLogcat) {
-      window.WazgLogcat.log("GUARD", "Anatomy Shield (WazgGuard) activated.");
+      window.WazgLogcat.log("GUARD", "Anatomy Shield online. Knochen-Riss-Limit: 250px.");
     }
   },
 
-  // Returns true if action is allowed, false if blocked
-  validateAction: function(actionType, payload) {
-    if (!payload) return true;
+  // Prüft, ob eine Bewegung legal ist
+  isMoveLegal: function(nodeId, newX, newY, state) {
+    // Finde alle Knochen (Connections), an denen dieser Knoten hängt
+    const relatedConnections = state.connections.filter(c => c.source === nodeId || c.target === nodeId);
 
-    switch (actionType) {
-      case 'ADD_NODE':
-        const x = payload.x || 0;
-        const y = payload.y || 0;
+    for (let conn of relatedConnections) {
+      // Finde den jeweiligen Partner-Knoten am anderen Ende des Knochens
+      const partnerId = (conn.source === nodeId) ? conn.target : conn.source;
+      const partnerNode = state.nodes.find(n => n.id === partnerId);
 
-        // Workspace boundaries (with padding)
-        if (x < 40 || x > 960 || y < 40 || y > 560) {
-          if (window.WazgLogcat) {
-            window.WazgLogcat.log("GUARD", `BLOCKED: Node ${payload.id || '?'} out of bounds (${x},${y})`);
-          }
+      if (partnerNode) {
+        // Berechne die Distanz (Satz des Pythagoras)
+        const dx = partnerNode.x - newX;
+        const dy = partnerNode.y - newY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Wenn die Distanz das Limit überschreitet, blockiere die Bewegung
+        if (distance > this.MAX_BONE_LENGTH) {
+          if (window.WazgLogcat) window.WazgLogcat.log("ALERT", `Guard blockiert! Knochen würde bei ${Math.round(distance)}px reißen.`);
           return false;
         }
-
-        // Prevent nodes from spawning too close to each other
-        if (window.WazgManager && window.WazgManager.state.nodes) {
-          const tooClose = window.WazgManager.state.nodes.some(node => {
-            const dx = node.x - x;
-            const dy = node.y - y;
-            return Math.sqrt(dx * dx + dy * dy) < 48; // Minimum safe distance
-          });
-
-          if (tooClose) {
-            if (window.WazgLogcat) {
-              window.WazgLogcat.log("GUARD", `BLOCKED: Node ${payload.id || '?'} too close to existing joint`);
-            }
-            return false;
-          }
-        }
-        break;
-
-      case 'CLEAR_WORKSPACE':
-        // Always allow clear for now
-        return true;
-
-      default:
-        return true;
+      }
     }
-
-    return true;
+    
+    return true; // Bewegung ist im legalen Rahmen
   }
 };
