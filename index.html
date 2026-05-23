@@ -1,59 +1,30 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>WazOs - VST-Biomechanik-Engine</title>
-    <style>
-        /* CSS: Erzwingt Darkmode und Sichtbarkeit des Canvas */
-        body { background: #111 !important; color: #0f0 !important; margin: 0; font-family: monospace; }
-        
-        #controls { padding: 15px; display: flex; gap: 10px; }
-        
-        #waz-svg-canvas { 
-            width: 100vw; 
-            height: 70vh; 
-            background: #000; 
-            border: 2px solid #0f0; 
-            display: block;
-        }
-        
-        button { 
-            background: #222; 
-            color: #0f0; 
-            border: 1px solid #0f0; 
-            padding: 12px 20px; 
-            cursor: pointer; 
-            font-weight: bold;
-        }
-        button:hover { background: #333; }
-    </style>
+    <link rel="icon" href="favicon.ico">
+    <title>WazOs</title>
 </head>
 <body>
-
-    <div id="controls">
-        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: Math.random()*500, y: Math.random()*300})">ADD JOINT</button>
-        <button onclick="window.WazgManager.dispatch('CLEAR_WORKSPACE', null)">CLEAR ALL</button>
-    </div>
-
-    <svg id="waz-svg-canvas"></svg>
-
+    <div id="waz-log-view" style="color: #0f0; font-family: monospace; border: 1px solid #333; height: 100px; overflow-y: scroll;"></div>
+    
+    <script src="src/core/WazgLogger.js"></script>
     <script src="src/core/WazgManager.js"></script>
     <script src="src/core/WazgAnatomy.js"></script>
     
-    <script src="src/plugins/isg_001_guard.js"></script>
-    <script src="src/plugins/isg_002_rig_processor.js"></script>
-    <script src="src/plugins/isg_005_zappel_fx.js"></script>
-
     <script>
-        // Init-Sequenz mit Fehler-Abfang
         window.onload = () => {
+            // Check ob alles da ist
+            if (!window.WazgLogger) console.error("Logger fehlt!");
+            if (!window.WazgManager) console.error("Manager fehlt!");
+            
             try {
-                console.log("INIT: Starte System...");
-                window.WazgAnatomy.init();
+                window.WazgLogger.log("Systemstart...");
                 window.WazgManager.init();
-                console.log("INIT: Erfolg. VST-Bus bereit.");
+                window.WazgAnatomy.init();
+                window.WazgLogger.log("VST-Bus bereit.");
             } catch (e) {
-                console.error("INIT: FATALER FEHLER", e);
+                console.error("CRITICAL BOOT ERROR:", e);
             }
         };
     </script>
