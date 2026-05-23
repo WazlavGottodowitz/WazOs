@@ -3,22 +3,16 @@ window.WazgAnatomy = {
 
   init: function() {
     this.canvas = document.getElementById("waz-svg-canvas");
-    
-    // ZWINGENDER RENDER-LINK:
-    // Wir setzen die Funktion direkt in den Manager. 
-    // Wenn der Manager "notify" ruft, wird diese Funktion ausgeführt.
+    // Hook setzen, statt auf 'subscribe' zu warten
     window.WazgManager.onUpdate = (state) => this.render(state);
-    
     console.log("Anatomy: Hook gesetzt.");
   },
 
   render: function(state) {
     if (!this.canvas) return;
+    this.canvas.innerHTML = ''; // Canvas leeren
     
-    // SVG aufräumen
-    this.canvas.innerHTML = '';
-    
-    // 1. Bones zeichnen
+    // Bones zeichnen
     state.connections.forEach(conn => {
       const n1 = state.nodes.find(n => n.id === conn.from);
       const n2 = state.nodes.find(n => n.id === conn.to);
@@ -32,7 +26,7 @@ window.WazgAnatomy = {
       }
     });
 
-    // 2. Joints zeichnen
+    // Joints zeichnen
     state.nodes.forEach(node => {
       const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       circle.setAttribute("cx", node.x);
