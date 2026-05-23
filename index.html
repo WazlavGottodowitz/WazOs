@@ -1,21 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>WazOs - VST-Biomechanik-Engine</title>
+    <style>
+        /* CSS: Erzwingt Darkmode und Sichtbarkeit des Canvas */
+        body { background: #111 !important; color: #0f0 !important; margin: 0; font-family: monospace; }
+        
+        #controls { padding: 15px; display: flex; gap: 10px; }
+        
+        #waz-svg-canvas { 
+            width: 100vw; 
+            height: 70vh; 
+            background: #000; 
+            border: 2px solid #0f0; 
+            display: block;
+        }
+        
+        button { 
+            background: #222; 
+            color: #0f0; 
+            border: 1px solid #0f0; 
+            padding: 12px 20px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        button:hover { background: #333; }
+    </style>
+</head>
 <body>
+
     <div id="controls">
-        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: 100, y: 100})">ADD NODE</button>
-        <button onclick="window.WazgManager.dispatch('CLEAR_WORKSPACE', null)">CLEAR</button>
+        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: Math.random()*500, y: Math.random()*300})">ADD JOINT</button>
+        <button onclick="window.WazgManager.dispatch('CLEAR_WORKSPACE', null)">CLEAR ALL</button>
     </div>
-    <svg id="waz-svg-canvas" style="width:100%; height:80vh; border:1px solid #0f0;"></svg>
+
+    <svg id="waz-svg-canvas"></svg>
 
     <script src="src/core/WazgManager.js"></script>
     <script src="src/core/WazgAnatomy.js"></script>
+    
+    <script src="src/plugins/isg_001_guard.js"></script>
+    <script src="src/plugins/isg_002_rig_processor.js"></script>
+    <script src="src/plugins/isg_005_zappel_fx.js"></script>
+
     <script>
+        // Init-Sequenz mit Fehler-Abfang
         window.onload = () => {
             try {
                 console.log("INIT: Starte System...");
                 window.WazgAnatomy.init();
                 window.WazgManager.init();
-                console.log("INIT: Erfolg.");
+                console.log("INIT: Erfolg. VST-Bus bereit.");
             } catch (e) {
                 console.error("INIT: FATALER FEHLER", e);
             }
