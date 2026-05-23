@@ -4,35 +4,60 @@ window.WazgManager = {
   listeners: [],
 
   init: function() {
-    if (window.WazgLogcat) window.WazgLogcat.log("SYSTEM", "Kernel Initialisierung...");
-    // Hier könnten wir später dynamisch Dateien aus /src/plugins/ laden
-    this.registerPlugin("RigProcessor"); 
+    // 1. Plugins finden
+    Object.keys(window).forEach(key => {
+      if (key.startsWith("isg_")) {
+        this.plugins.push(window[key]);
+      }
+    });
+
+    // 2. Plugins nach Priorität sortieren (Guard = 1, Rig = 2, etc.)
+    this.plugins.sort((a, b) => (a.priority || 99) - (b.priority || 99));
+
+    // 3. Init aller Plugins
+    this.plugins.forEach(p => { if (p.init) p.init(this); });
+    
+    if (window.WazgLogcat) window.WazgLogcat.log("SYSTEM", "Kernel & Plugins synchronisiert.");
   },
 
-  registerPlugin: function(name) {
-    if (window["isg_" + name]) {
-      this.plugins.push(window["isg_" + name]);
-      window["isg_" + name].init(this);
-      if (window.WazgLogcat) window.WazgLogcat.log("PLUGIN", `Modul ${name} geladen.`);
-    }
+  subscribe: function(callback) {
+    this.listeners.push(callback);
   },
 
   dispatch: function(actionType, payload) {
-    // 1. Vor-Verarbeitung durch Plugins (z.B. Rig-Logik, Guard)
+    // Pipeline durchlaufen
     for (let plugin of this.plugins) {
-      if (plugin.beforeDispatch) plugin.beforeDispatch(actionType, payload, this.state);
+      if (plugin.beforeDispatch) {
+        // Plugin kann Bewegung blockieren, wenn es 'false' zurückgibt (z.B. Guard)
+        const allowed = plugin.beforeDispatch(actionType, payload, this.state);
+        if (allowed === false) return; 
+      }
     }
 
-    // 2. State Änderung
+    // State Update
     switch(actionType) {
       case 'ADD_NODE':
         this.state.nodes.push(payload);
         break;
-      // ... restliche Fälle ...
+      case 'DRAG_MOVE':
+        const node = this.state.nodes.find(n => n.id === this.state.draggingId);
+        if (node) { node.x = payload.x; node.y = payload.y; }
+        break;
+      case 'DRAG_START':
+        this.state.draggingId = payload.id;
+        break;
+      case 'DRAG_END':
+        this.state.draggingId = null;
+        break;
+      case 'CLEAR_WORKSPACE':
+        this.state.nodes = [];
+        this.state.connections = [];
+        break;
     }
-
     this.notify();
   },
-  
-  // ... notify & co bleiben gleich ...
+
+  notify: function() {
+    this.listeners.forEach(l => l(this.state));
+  }
 };
