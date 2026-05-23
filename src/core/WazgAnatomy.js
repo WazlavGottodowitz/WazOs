@@ -3,41 +3,43 @@ window.WazgAnatomy = {
 
   init: function() {
     this.canvas = document.getElementById("waz-svg-canvas");
-    if (!this.canvas) return;
-
-    // Der direkte Draht zum VST-Manager
+    
+    // ZWINGENDER RENDER-LINK:
+    // Wir setzen die Funktion direkt in den Manager. 
+    // Wenn der Manager "notify" ruft, wird diese Funktion ausgeführt.
     window.WazgManager.onUpdate = (state) => this.render(state);
-
-    this.setupDragListeners();
-  },
-
-  setupDragListeners: function() {
-    this.canvas.addEventListener('mousemove', (e) => {
-      const coords = this.getMouseCoords(e);
-      window.WazgManager.dispatch('DRAG_MOVE', coords);
-    });
-    // ... restliche Event-Listener (mousedown, mouseup, etc.) ...
+    
+    console.log("Anatomy: Hook gesetzt.");
   },
 
   render: function(state) {
-    // Bestehende Render-Logik (SVG-Knoten zeichnen)
-    while (this.canvas.firstChild) this.canvas.removeChild(this.canvas.firstChild);
+    if (!this.canvas) return;
     
+    // SVG aufräumen
+    this.canvas.innerHTML = '';
+    
+    // 1. Bones zeichnen
+    state.connections.forEach(conn => {
+      const n1 = state.nodes.find(n => n.id === conn.from);
+      const n2 = state.nodes.find(n => n.id === conn.to);
+      if (n1 && n2) {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", n1.x); line.setAttribute("y1", n1.y);
+        line.setAttribute("x2", n2.x); line.setAttribute("y2", n2.y);
+        line.setAttribute("stroke", "#00ff00");
+        line.setAttribute("stroke-width", "2");
+        this.canvas.appendChild(line);
+      }
+    });
+
+    // 2. Joints zeichnen
     state.nodes.forEach(node => {
       const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       circle.setAttribute("cx", node.x);
       circle.setAttribute("cy", node.y);
-      circle.setAttribute("r", 15);
+      circle.setAttribute("r", 8);
       circle.setAttribute("fill", "#00ff00");
       this.canvas.appendChild(circle);
     });
-  },
-
-  getMouseCoords: function(evt) {
-    let CTM = this.canvas.getScreenCTM();
-    return {
-      x: (evt.clientX - CTM.e) / CTM.a,
-      y: (evt.clientY - CTM.f) / CTM.d
-    };
   }
 };
