@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="favicon.ico">
-    <title>WazOs</title>
+    <title>WazOs - System Recovery</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; }
+        #error-log { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <div id="waz-log-view" style="color: #0f0; font-family: monospace; border: 1px solid #333; height: 100px; overflow-y: scroll;"></div>
-    
-    <script src="src/core/WazgLogger.js"></script>
-    <script src="src/core/WazgManager.js"></script>
-    <script src="src/core/WazgAnatomy.js"></script>
-    
+    <div id="error-log"></div>
+    <div id="app">
+        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: 100, y: 100})">ADD NODE</button>
+        <svg id="waz-svg-canvas" style="width:100%; height:80vh; border:1px solid #0f0;"></svg>
+    </div>
+
     <script>
-        window.onload = () => {
-            // Check ob alles da ist
-            if (!window.WazgLogger) console.error("Logger fehlt!");
-            if (!window.WazgManager) console.error("Manager fehlt!");
-            
-            try {
-                window.WazgLogger.log("Systemstart...");
-                window.WazgManager.init();
-                window.WazgAnatomy.init();
-                window.WazgLogger.log("VST-Bus bereit.");
-            } catch (e) {
-                console.error("CRITICAL BOOT ERROR:", e);
-            }
+        // Fängt JEDEN Fehler ab, der die Seite weiß macht
+        window.onerror = function(msg, url, line) {
+            document.getElementById('error-log').innerHTML = "FATALER FEHLER: " + msg + " in Zeile " + line;
+            return false;
         };
     </script>
+
+    <script src="src/core/WazgLogger.js" defer></script>
+    <script src="src/core/WazgManager.js" defer></script>
+    <script src="src/core/WazgAnatomy.js" defer></script>
 </body>
 </html>
