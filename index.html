@@ -5,12 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>WazOs Core Interface</title>
   <style>
-    /* Globales CRT & Core Styling */
+    /* Globales Setup: 100% statt 100vh verhindert das Abschneiden durch die Mobile-Adressleiste */
     body, html {
       margin: 0; padding: 0; width: 100%; height: 100%;
-      background-color: #1e1e1e; font-family: 'Courier New', Courier, monospace; overflow: hidden;
+      background-color: #0a0a0a; font-family: 'Courier New', Courier, monospace; overflow: hidden;
+      /* Verhindert Pull-to-Refresh auf mobilen Geräten */
+      overscroll-behavior-y: none; 
     }
-    #waz-container { position: relative; width: 100%; height: 100vh; overflow: hidden; box-sizing: border-box; }
+
+    /* Der Main-Container: Auf Desktop maximal 1200px breit und zentriert, auf Mobile 100% */
+    #waz-container { 
+      position: relative; 
+      width: 100%; 
+      max-width: 1200px;
+      height: 100%; 
+      margin: 0 auto;
+      background-color: #1e1e1e;
+      overflow: hidden; 
+      box-sizing: border-box; 
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
     
     /* TOPHEADER & TICKER LAUFBAND */
     #waz-header { width: 100%; height: 50px; border-bottom: 1px solid #004400; background: #1a1a1a; box-sizing: border-box; }
@@ -19,17 +33,67 @@
     #ticker-text { color: #00cc00; font-size: 12px; line-height: 20px; }
     
     /* WORKSPACE (Rig-Spielfeld) */
-    #waz-workspace { width: 100%; height: calc(100vh - 150px); position: relative; background: #151515; }
+    /* Zieht die 150px (Header + Terminal) von den echten 100% Höhe ab */
+    #waz-workspace { 
+      width: 100%; 
+      height: calc(100% - 150px); 
+      position: relative; 
+      background: #151515; 
+      touch-action: none; /* Verhindert ungewolltes Scrollen beim Wischen über das Canvas */
+    }
     
-    /* LOGCAT TERMINAL FOOTER */
+    /* LOGCAT TERMINAL FOOTER - Wrap */
     #waz-terminal {
       width: 100%; height: 100px; background: rgba(26, 26, 26, 0.95); border-top: 2px solid #00ff00;
-      position: absolute; bottom: 0; left: 0; overflow-y: auto; z-index: 1000; box-sizing: border-box;
+      position: absolute; bottom: 0; left: 0; 
+      z-index: 1000; box-sizing: border-box;
       box-shadow: 0 -5px 15px rgba(0, 255, 0, 0.1);
+      /* Das Terminal selbst scrollt nicht mehr, nur der Textbereich! */
+      overflow: hidden; 
     }
-    #waz-terminal-text { width: 100%; height: 100%; padding: 8px; font-size: 11px; color: #00ff00; box-sizing: border-box; white-space: pre-wrap; }
-    .log-info { color: #00ff00; margin-bottom: 2px; }
-    .log-alert { color: #ff0000; font-weight: bold; text-shadow: 0 0 5px #ff0000; margin-bottom: 2px; }
+    
+    /* Der eigentlich scrollende Textbereich im Terminal */
+    #waz-terminal-text { 
+      width: 100%; 
+      height: 100%; 
+      overflow-y: auto; 
+      padding: 8px 80px 8px 8px; /* Rechts 80px Platz lassen, damit der Text nicht unter den Button rutscht */
+      font-size: 12px; 
+      color: #00ff00; 
+      box-sizing: border-box; 
+      white-space: pre-wrap; 
+    }
+    
+    /* LOG COLORS */
+    .log-info { color: #00ff00; margin-bottom: 3px; }
+    .log-alert { color: #ff0000; font-weight: bold; text-shadow: 0 0 5px #ff0000; margin-bottom: 3px; }
+
+    /* COPY BUTTON - Fixiert in der oberen rechten Ecke des Terminals */
+    .copy-btn {
+      position: absolute; 
+      top: 10px; 
+      right: 15px; 
+      background: #111; 
+      border: 1px solid #00ff00;
+      color: #00ff00; 
+      padding: 6px 10px; 
+      font-size: 12px; 
+      font-family: monospace;
+      font-weight: bold;
+      cursor: pointer; 
+      border-radius: 4px; 
+      z-index: 1010;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 5px rgba(0,255,0,0.2);
+    }
+    .copy-btn:hover { background: #00ff00; color: #111; box-shadow: 0 0 10px rgba(0,255,0,0.5); }
+    
+    /* Desktop-Anpassungen für größere Monitore */
+    @media (min-width: 768px) {
+      #waz-terminal { height: 120px; }
+      #waz-workspace { height: calc(100% - 170px); }
+      #waz-terminal-text { font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -40,7 +104,7 @@
         <input type="checkbox" id="chk-guide" checked onchange="document.getElementById('ticker-text').style.display = this.checked ? 'block' : 'none'"> 🧠 GUIDE
       </label>
       <div class="ticker-wrapper">
-        <marquee id="ticker-text" scrollamount="3">WazOs v66.0 geladen. Data-Driven Mode aktiv.</marquee>
+        <marquee id="ticker-text" scrollamount="3">WazOs v66.0 geladen. Data-Driven Mode aktiv. Responsive Core stabil.</marquee>
       </div>
     </div>
 
@@ -49,7 +113,8 @@
     </div>
 
     <div id="waz-terminal">
-      <div id="waz-terminal-text">> (BOOT) Initialisiere System...</div>
+      <button class="copy-btn" onclick="window.WazgLogcat.copyLog()">📋 COPY</button>
+      <div id="waz-terminal-text"><div class="log-info">> (BOOT) Initialisiere System...</div></div>
     </div>
   </div>
 
@@ -77,4 +142,4 @@
   </script>
 
 </body>
-      </html>
+</html>
