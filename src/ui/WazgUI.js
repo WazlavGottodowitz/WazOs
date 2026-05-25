@@ -1,79 +1,54 @@
-// =============================================
-// WazgUI.js - Shared Modular UI Components
-// =============================================
-
+// wazOS - WazgUI.js (Component Factory & UI Toolkit)
 window.WazgUI = {
-  // Consistent Button Creator
-  createButton: function(text, options = {}) {
-    const {
-      color = "#00ff88",
-      borderColor = "#004400",
-      background = "#1a1a1a",
-      onClick = null,
-      size = "normal"
-    } = options;
+    isStub: false,
 
-    const btn = document.createElement("div");
-    btn.innerHTML = text;
-    
-    btn.style.cssText = `
-      background: ${background};
-      border: 2px solid ${borderColor};
-      color: ${color};
-      font-family: 'Courier New', monospace;
-      font-size: ${size === "small" ? "11px" : "13px"};
-      padding: ${size === "small" ? "7px 10px" : "10px 14px"};
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
-      transition: all 0.1s ease;
-      user-select: none;
-    `;
+    init: function() {
+        if (window.WazgLogcat && typeof window.WazgLogcat.log === "function") {
+            window.WazgLogcat.log("UI", "WazgUI-Komponenten-Fabrik betriebsbereit.");
+        }
+    },
 
-    btn.onmouseover = () => {
-      btn.style.background = "#222";
-      btn.style.boxShadow = "0 0 12px rgba(0, 255, 0, 0.4)";
-    };
-    btn.onmouseout = () => {
-      btn.style.background = background;
-      btn.style.boxShadow = "0 0 8px rgba(0, 255, 0, 0.2)";
-    };
+    createButton: function(text, color, bg, onClick) {
+        const btn = document.createElement("button");
+        btn.innerHTML = text;
+        btn.style.cssText = `background:${bg}; border:1px solid ${color}; color:${color}; padding:6px 10px; font-size:11px; font-family:monospace; border-radius:4px; cursor:pointer; flex:1; font-weight:bold; transition: opacity 0.15s;`;
+        
+        // Touch-Optimierung für Mobilgeräte
+        btn.addEventListener('touchstart', () => btn.style.opacity = "0.7", {passive: true});
+        btn.addEventListener('touchend', () => btn.style.opacity = "1", {passive: true});
+        btn.onclick = onClick;
+        return btn;
+    },
 
-    if (onClick) btn.onclick = onClick;
+    createSliderBox: function(name, min, max, val, onChange) {
+        const box = document.createElement("div");
+        box.style.cssText = `display:flex; align-items:center; justify-content:space-between; color:#ffaa00; font-size:11px; font-family:monospace;`;
+        
+        const label = document.createElement("span");
+        label.innerText = `${name}: `;
+        label.style.cssText = `width:80px; text-align:left;`;
+        
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.min = min;
+        slider.max = max;
+        slider.value = val;
+        slider.style.cssText = `flex:1; accent-color:#ffaa00; cursor:pointer; height:15px;`;
+        
+        const display = document.createElement("span");
+        display.innerText = val;
+        display.style.cssText = `width:30px; text-align:right; margin-left:5px; color:#fff;`;
 
-    return btn;
-  },
+        slider.oninput = (e) => {
+            display.innerText = e.target.value;
+            onChange(e.target.value);
+        };
 
-  // Consistent Slider Creator
-  createSlider: function(label, min, max, defaultValue, onChange, options = {}) {
-    const { step = 1, unit = "", color = "#ffcc00" } = options;
-
-    const container = document.createElement("div");
-    container.style.cssText = `
-      background: #1a1a1a;
-      border: 2px solid ${color};
-      padding: 8px 12px;
-      border-radius: 6px;
-      color: ${color};
-    `;
-
-    container.innerHTML = `
-      ${label}: <span id="slider-val-${label.toLowerCase().replace(/\s/g,'')}">${defaultValue}${unit}</span><br>
-      <input type="range" id="slider-${label.toLowerCase().replace(/\s/g,'')}" 
-             min="${min}" max="${max}" value="${defaultValue}" step="${step}" 
-             style="width:100%; accent-color:${color};">
-    `;
-
-    const slider = container.querySelector("input");
-    const valueSpan = container.querySelector("span");
-
-    slider.oninput = () => {
-      const val = parseFloat(slider.value);
-      valueSpan.textContent = val + unit;
-      if (onChange) onChange(val);
-    };
-
-    return container;
-  }
+        box.appendChild(label);
+        box.appendChild(slider);
+        box.appendChild(display);
+        return box;
+    }
 };
+
+if (window.WazgManager) window.WazgManager.registerStub("WazgUI");
