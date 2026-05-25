@@ -1,17 +1,38 @@
-// wazOS - WazgLayout.js (Responsive Mobile GUI & Controls)
+// wazOS - WazgLayout.js (Flexible Grid UI)
 window.WazgLayout = {
     isStub: false,
     currentFPS: 10,
 
     init: function() {
+        this.applyFlexGrid();
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
 
-        // Baue Steuerungs-Panel auf dem Workspace auf
         this.buildControls();
+        this.injectUtilityButtons();
 
         if (window.WazgLogcat && typeof window.WazgLogcat.log === "function") {
-            window.WazgLogcat.log("LAYOUT", "Mobile GUI initialisiert. Steuerungspanel aktiv.");
+            window.WazgLogcat.log("LAYOUT", "Flexibles CSS-Grid-Layout injiziert.");
+        }
+    },
+
+    applyFlexGrid: function() {
+        // Formatiert den Hauptcontainer als flexibles Grid-System
+        const container = document.getElementById("waz-container");
+        if (container) {
+            container.style.cssText = `
+                display: grid;
+                grid-template-rows: 35px 1fr 110px;
+                height: 100vh;
+                width: 100vw;
+                overflow: hidden;
+            `;
+        }
+        
+        // Workspace kriegt relative Positionierung für absolute Overlays
+        const workspace = document.getElementById("waz-workspace");
+        if (workspace) {
+            workspace.style.cssText = `position: relative; background: #0a0a0a; overflow: hidden;`;
         }
     },
 
@@ -26,120 +47,78 @@ window.WazgLayout = {
 
     buildControls: function() {
         const workspace = document.getElementById("waz-workspace");
-        if (!workspace) return;
+        if (!workspace || !window.WazgUI) return;
 
-        // Panel Container
         let controls = document.getElementById("waz-controls-panel");
         if (!controls) {
             controls = document.createElement("div");
             controls.id = "waz-controls-panel";
-            controls.style.cssText = `position:absolute; bottom:10px; left:10px; right:10px; background:rgba(0,0,0,0.85); border:1px solid #ffaa00; padding:10px; border-radius:8px; z-index:100; display:flex; flex-direction:column; gap:8px; font-family:monospace;`;
+            controls.style.cssText = `position:absolute; bottom:10px; left:10px; right:10px; background:rgba(0,0,0,0.9); border:1px solid #ffaa00; padding:8px; border-radius:6px; z-index:100; display:flex; flex-direction:column; gap:6px;`;
             workspace.appendChild(controls);
         } else {
             controls.innerHTML = "";
         }
 
-        // Generator Input & Button
+        // Zeile 1: Prompt Input & Throw Button
         const topRow = document.createElement("div");
         topRow.style.cssText = `display:flex; gap:5px;`;
         
         const input = document.createElement("input");
         input.id = "waz-prompt-input";
         input.placeholder = "Prompt eingeben...";
-        input.style.cssText = `flex:1; background:#111; border:1px solid #555; color:#fff; padding:5px; font-size:12px; border-radius:4px;`;
+        input.style.cssText = `flex:1; background:#111; border:1px solid #444; color:#fff; padding:5px; font-size:12px; font-family:monospace; border-radius:4px;`;
         topRow.appendChild(input);
 
-        const genBtn = this.createButton("⚡ Throw", "#ffaa00", "#221100", () => {
+        const genBtn = window.WazgUI.createButton("⚡ Throw", "#ffaa00", "#221100", () => {
             const p = document.getElementById("waz-prompt-input").value;
             if (p && window.WazgFrameThrower) window.WazgFrameThrower.throwFrames(p, 10);
         });
         topRow.appendChild(genBtn);
         controls.appendChild(topRow);
 
-        // Sliders
-        controls.appendChild(this.createSliderBox("FPS", 5, 20, 10, (v) => this.currentFPS = parseInt(v)));
-        controls.appendChild(this.createSliderBox("Interp (ms)", 80, 800, 280, (v) => {
+        // PLATZSPAREND: Erzeuge die Regler und packe sie in das Ausklapp-Panel
+        const fpsSlider = window.WazgUI.createSliderBox("FPS", 5, 20, this.currentFPS, (v) => this.currentFPS = parseInt(v));
+        const interpSlider = window.WazgUI.createSliderBox("Interp (ms)", 80, 800, 280, (v) => {
             if (window.WazgFrameThrower) window.WazgFrameThrower.fadeDuration = parseInt(v);
-        }));
-
-        // Presets Row
-        const presetRow = document.createElement("div");
-        presetRow.style.cssText = `display:flex; flex-wrap:wrap; gap:5px; align-items:center;`;
-        
-        const label = document.createElement("span");
-        label.innerText = "Easing: ";
-        label.style.cssText = `color:#888; font-size:10px;`;
-        presetRow.appendChild(label);
-
-        const presets = [
-            { label: "Ease Out", value: "ease-out" },
-            { label: "Smooth", value: "ease-in-out" },
-            { label: "Linear", value: "linear" },
-            { label: "Bounce", value: "ease-out-back" }
-        ];
-
-        presets.forEach(p => {
-            const btn = document.createElement("div");
-            btn.innerHTML = p.label;
-            btn.style.cssText = `background:#1a1a1a; border:1px solid #ffaa00; color:#ffaa00; padding:3px 6px; border-radius:4px; font-size:10px; cursor:pointer;`;
-            btn.onclick = () => {
-                if (window.WazgFrameThrower) window.WazgFrameThrower.setEasing(p.value);
-            };
-            presetRow.appendChild(btn);
         });
-        controls.appendChild(presetRow);
 
-        // Play / Stop / Clear Actions Row
+        const collapsibleEngineSettings = window.WazgUI.createCollapsiblePanel("Engine Parameter", [fpsSlider, interpSlider]);
+        controls.appendChild(collapsibleEngineSettings);
+
+        // Zeile 3: Wiedergabe-Aktionen
         const actRow = document.createElement("div");
         actRow.style.cssText = `display:flex; gap:5px;`;
-        actRow.appendChild(this.createButton("▶️ Play", "#ffcc00", "#442200", () => {
+        actRow.appendChild(window.WazgUI.createButton("▶️ Play", "#ffcc00", "#442200", () => {
             if (window.WazgFrameThrower) window.WazgFrameThrower.playAnimation(this.currentFPS);
         }));
-        actRow.appendChild(this.createButton("⏹️ Stop", "#ff6666", "#440000", () => {
+        actRow.appendChild(window.WazgUI.createButton("⏹️ Stop", "#ff6666", "#440000", () => {
             if (window.WazgFrameThrower) window.WazgFrameThrower.stopAnimation();
         }));
-        actRow.appendChild(this.createButton("🗑️ Clear", "#ff4444", "#440000", () => {
-            if (window.WazgFrameThrower && confirm("Frames löschen?")) window.WazgFrameThrower.clear();
+        actRow.appendChild(window.WazgUI.createButton("🗑️ Clear", "#ff4444", "#440000", () => {
+            if (window.WazgFrameThrower && confirm("Clear buffer?")) window.WazgFrameThrower.clear();
         }));
         controls.appendChild(actRow);
     },
 
-    createButton: function(text, color, bg, onClick) {
-        const btn = document.createElement("button");
-        btn.innerHTML = text;
-        btn.style.cssText = `background:${bg}; border:1px solid ${color}; color:${color}; padding:6px 10px; font-size:11px; font-family:monospace; border-radius:4px; cursor:pointer; flex:1; font-weight:bold;`;
-        btn.onclick = onClick;
-        return btn;
-    },
-
-    createSliderBox: function(name, min, max, val, onChange) {
-        const box = document.createElement("div");
-        box.style.cssText = `display:flex; align-items:center; justify-content:space-between; color:#ffaa00; font-size:11px;`;
+    injectUtilityButtons: function() {
+        const terminal = document.getElementById("waz-terminal");
+        if (!terminal || !window.WazgUI) return;
         
-        const label = document.createElement("span");
-        label.innerText = `${name}: `;
-        label.style.cssText = `width:80px; text-align:left;`;
-        
-        const slider = document.createElement("input");
-        slider.type = "range";
-        slider.min = min;
-        slider.max = max;
-        slider.value = val;
-        slider.style.cssText = `flex:1; accent-color:#ffaa00; cursor:pointer;`;
-        
-        const display = document.createElement("span");
-        display.innerText = val;
-        display.style.cssText = `width:30px; text-align:right; margin-left:5px; color:#fff;`;
+        terminal.style.position = "relative";
 
-        slider.oninput = (e) => {
-            display.innerText = e.target.value;
-            onChange(e.target.value);
-        };
+        // Erstelle den Copy-Log Button direkt oben rechts im Terminal-Fenster
+        const copyBtn = window.WazgUI.createButton("📋 Copy Log", "#00ffaa", "#002211", () => {
+            window.WazgUI.copyTerminalLog();
+        });
+        copyBtn.style.position = "absolute";
+        copyBtn.style.top = "5px";
+        copyBtn.style.right = "5px";
+        copyBtn.style.zIndex = "110";
+        copyBtn.style.flex = "none";
+        copyBtn.style.fontSize = "9px";
+        copyBtn.style.padding = "3px 6px";
 
-        box.appendChild(label);
-        box.appendChild(slider);
-        box.appendChild(display);
-        return box;
+        terminal.appendChild(copyBtn);
     }
 };
 
