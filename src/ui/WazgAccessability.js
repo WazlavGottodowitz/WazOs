@@ -1,4 +1,4 @@
-// wazOS - WazgAccessability.js (Mobile UX & Accessability Shield)
+// wazOS - WazgAccessability.js (Mobile UX & Accessibility Shield)
 window.WazgAccessability = {
     isStub: false,
 
@@ -12,11 +12,10 @@ window.WazgAccessability = {
     },
 
     applyTouchShield: function() {
-        // Verhindert versehentliches Herumzoomen beim hämmern auf Mobile-Buttons
+        // Verhindert das lästige automatische Zoomen bei schnellen Doppel-Taps auf Mobile-Buttons
         document.addEventListener('touchend', function(e) {
             if (e.target.tagName === 'BUTTON' || e.target.classList.contains('waz-btn')) {
-                // Ermöglicht schnelles Klicken ohne künstlichen 300ms Delay
-                if(e.cancelable) e.preventDefault();
+                if (e.cancelable) e.preventDefault();
                 e.target.click();
             }
         }, { passive: false });
@@ -32,9 +31,11 @@ window.WazgAccessability = {
         const terminal = document.getElementById("waz-terminal");
         if (terminal) {
             terminal.setAttribute("role", "log");
-            terminal.setAttribute("aria-live", "policeman");
+            terminal.setAttribute("aria-live", "polite");
         }
     }
 };
 
-if (window.WazgManager) window.WazgManager.registerStub("WazgAccessability");
+if (window.WazgManager) {
+    window.WazgManager.registerStub("WazgAccessability");
+}
