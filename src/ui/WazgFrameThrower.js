@@ -10,7 +10,7 @@ window.WazgFrameThrower = {
 
     init: function() {
         if (window.WazgLogcat && typeof window.WazgLogcat.log === "function") {
-            window.WazgLogcat.log("FRAME", "FrameThrower mit regelbarer Interpolation geladen.");
+            window.WazgLogcat.log("FRAME", "FrameThrower-Engine erfolgreich im Core initialisiert.");
         }
     },
 
@@ -19,7 +19,7 @@ window.WazgFrameThrower = {
         this.isRunning = true;
         this.frameBuffer = [];
 
-        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", `Generiere ${frameCount} Frames...`);
+        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", `Generiere ${frameCount} Frames für Prompt: "${basePrompt}"`);
 
         const results = [];
         for (let i = 0; i < frameCount; i += this.maxParallel) {
@@ -34,7 +34,7 @@ window.WazgFrameThrower = {
         }
 
         this.isRunning = false;
-        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", "Frame-Generierung abgeschlossen.");
+        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", "Frame-Sequenz erfolgreich im Buffer hinterlegt.");
         return results;
     },
 
@@ -42,7 +42,7 @@ window.WazgFrameThrower = {
         try {
             const seed = Date.now() + index * 73;
             const url = `https://picsum.photos/id/${(seed % 900) + 100}/800/600`;
-            await new Promise(r => setTimeout(r, 500 + Math.random() * 700));
+            await new Promise(r => setTimeout(r, 400 + Math.random() * 500));
             return { frame: index, url: url, prompt: basePrompt };
         } catch (e) {
             return { frame: index, url: `https://picsum.photos/800/600?random=${Date.now()}`, prompt: basePrompt };
@@ -59,11 +59,10 @@ window.WazgFrameThrower = {
         let index = 0;
         const intervalTime = 1000 / fps;
 
-        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", `Starte Loop mit ${fps} FPS.`);
+        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", `Loop gestartet mit ${fps} FPS.`);
 
         this.animationTimer = setInterval(() => {
             const frameData = this.frameBuffer[index];
-            // SVG-Update Logik
             let imgElement = svg.getElementById("waz-anim-target");
             if (!imgElement) {
                 imgElement = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -83,7 +82,7 @@ window.WazgFrameThrower = {
         if (this.animationTimer) {
             clearInterval(this.animationTimer);
             this.animationTimer = null;
-            if (window.WazgLogcat) window.WazgLogcat.log("FRAME", "Loop gestoppt.");
+            if (window.WazgLogcat) window.WazgLogcat.log("FRAME", "Loop angehalten.");
         }
     },
 
@@ -92,7 +91,7 @@ window.WazgFrameThrower = {
         this.frameBuffer = [];
         const svg = document.getElementById("waz-svg-canvas");
         if (svg) svg.innerHTML = "";
-        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", "Buffer geleert.");
+        if (window.WazgLogcat) window.WazgLogcat.log("FRAME", "Buffer bereinigt.");
     },
 
     setEasing: function(val) {
