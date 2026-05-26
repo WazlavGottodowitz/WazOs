@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WazOs - Studio</title>
+    <style>
+        /* CSS Variablen - Das neon-grüne Matrix Theme */
+        :root {
+            --bg-main: #000000;
+            --bg-panel: #111111;
+            --bg-input: #222222;
+            --accent: #00ff00;
+            --accent-dim: #005500;
+            --text: #00ff00;
+            --border: 1px solid var(--accent);
+            --border-dim: 1px solid #333;
+            --header-h: 50px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        
+        body, html {
+            width: 100%; height: 100%; overflow: hidden;
+            background: var(--bg-main); color: var(--text); font-family: monospace;
+        }
+
+        /* --- GLOBALE NAVIGATION (TABS) --- */
+        #waz-tabs {
+            position: absolute; top: 0; left: 0; width: 100%; height: var(--header-h);
+            background: var(--bg-panel); border-bottom: var(--border-dim);
+            display: flex; align-items: center; padding: 0 10px; gap: 5px;
+            overflow-x: auto; white-space: nowrap;
+        }
+
+        .tab-btn {
+            background: transparent; color: #888; border: none; border-bottom: 2px solid transparent;
+            padding: 10px 15px; cursor: pointer; font-weight: bold; font-family: monospace;
+        }
+        .tab-btn:hover { color: var(--accent); }
+        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+
+        /* --- WORKSPACES (PANELS) --- */
+        #workspace-container {
+            position: absolute; top: var(--header-h); left: 0; right: 0; bottom: 0;
+        }
+
+        .panel {
+            width: 100%; height: 100%; display: none; position: relative;
+        }
+        .panel.active { display: block; }
+
+        /* --- TAB 1: STUDIO (Text-to-Image) --- */
+        .studio-layout { display: flex; height: 100%; flex-wrap: wrap; overflow-y: auto; }
+        .sidebar { flex: 1 1 300px; background: var(--bg-panel); border-right: var(--border-dim); padding: 15px; }
+        .preview-area { flex: 2 1 400px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px; }
+        
+        .input-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        input, textarea, select { background: var(--bg-input); color: var(--text); border: var(--border-dim); padding: 8px; font-family: monospace; width: 100%; }
+        input:focus, textarea:focus { border: var(--border); outline: none; }
+        
+        .action-btn { background: var(--bg-input); color: var(--text); border: var(--border); padding: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
+        .action-btn:hover { background: var(--accent); color: var(--bg-main); }
+
+        /* --- TAB 2: MASCHINENRAUM (Node Editor & Terminal) --- */
+        #waz-svg-canvas { width: 100%; height: calc(100% - 100px); display: block; background: #020202; }
+        
+        #micro-terminal {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100px;
+            background: #050505; border-top: var(--border); display: flex; flex-direction: column;
+        }
+        #terminal-header {
+            display: flex; justify-content: space-between; background: var(--bg-panel); padding: 5px 10px; font-size: 12px; border-bottom: var(--border-dim);
+        }
+        #terminal-content { flex: 1; overflow-y: auto; padding: 8px; font-size: 12px; line-height: 1.4; }
+        .term-switch { cursor: pointer; color: #555; }
+        .term-switch.active { color: var(--accent); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <nav id="waz-tabs">
+        <button class="tab-btn active" data-target="tab-studio">STUDIO (T2I)</button>
+        <button class="tab-btn" data-target="tab-maschinenraum">MASCHINENRAUM</button>
+        <button class="tab-btn" data-target="tab-timeline">TIMELINE</button>
+        <button class="tab-btn" data-target="tab-rigging">RIGGING</button>
+        <button class="tab-btn" data-target="tab-library">LIBRARY</button>
+    </nav>
+
+    <div id="workspace-container">
+        
+        <div id="tab-studio" class="panel active">
+            <div class="studio-layout">
+                <div class="sidebar">
+                    <div class="input-group">
+                        <label>Prompt:</label>
+                        <textarea rows="4" placeholder="A futuristic cyberpunk city..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Negative Prompt:</label>
+                        <textarea rows="2" placeholder="blurry, bad anatomy..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Guidance Scale:</label>
+                        <input type="range" min="1" max="20" value="7">
+                    </div>
+                    <div class="input-group">
+                        <label>--flags (Extra Params):</label>
+                        <input type="text" placeholder="--v 5 --ar 16:9">
+                    </div>
+                    <button class="action-btn" style="margin-top: 20px;">GENERATE IMAGE</button>
+                </div>
+                <div class="preview-area">
+                    <div style="width: 100%; max-width: 512px; aspect-ratio: 1/1; border: var(--border-dim); display: flex; align-items: center; justify-content: center; color: #333;">
+                        [ PREVIEW RENDER ]
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%; max-width: 512px;">
+                        <button class="action-btn">MAKE KEYFRAME_0</button>
+                        <button class="action-btn">SETUP RIG</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-maschinenraum" class="panel">
+            <div style="position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 10px;">
+                <button class="action-btn" id="btn-add-joint" style="width: auto;">+ ADD JOINT</button>
+                <button class="action-btn" id="btn-clear-all" style="width: auto; border-color: #550000; color: #ff0000;">CLEAR ALL</button>
+            </div>
+            
+            <svg id="waz-svg-canvas"></svg>
+
+            <div id="micro-terminal">
+                <div id="terminal-header">
+                    <span>TERMINAL</span>
+                    <div>
+                        <span class="term-switch active" id="sw-logger">LOGGER</span> | 
+                        <span class="term-switch" id="sw-ticker">TICKER</span>
+                    </div>
+                </div>
+                <div id="terminal-content">
+                    > WazOs Kernels initialized...<br>
+                    > Maschinenraum online. Ready for Joint-Matrix.
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-timeline" class="panel">
+            <h2 style="padding: 20px; color: #444;">Timeline & Keyframe Editor (In Entwicklung)</h2>
+        </div>
+
+        <div id="tab-rigging" class="panel">
+            <h2 style="padding: 20px; color: #444;">Rigging Setup (In Entwicklung)</h2>
+        </div>
+
+        <div id="tab-library" class="panel">
+            <h2 style="padding: 20px; color: #444;">JSON Presets & Batchlist (In Entwicklung)</h2>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Tab-Wechsler Logik
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const panels = document.querySelectorAll('.panel');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+
+                    e.target.classList.add('active');
+                    const targetId = e.target.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // 2. Terminal-Subtabs (Logger vs Ticker)
+            const btnLogger = document.getElementById('sw-logger');
+            const btnTicker = document.getElementById('sw-ticker');
+            const termContent = document.getElementById('terminal-content');
+
+            if(btnLogger && btnTicker) {
+                btnLogger.addEventListener('click', () => {
+                    btnLogger.classList.add('active');
+                    btnTicker.classList.remove('active');
+                    termContent.innerHTML = "> Logger View aktiv...<br>> Zeigt System-Events und Node-Zustände.";
+                });
+
+                btnTicker.addEventListener('click', () => {
+                    btnTicker.classList.add('active');
+                    btnLogger.classList.remove('active');
+                    termContent.innerHTML = "> Ticker View aktiv...<br>> [ 148 BPM Mode | Syncing Canvas Engine ]";
+                });
+            }
+
+            // 3. Temporärer Button-Sicherheitsgurt (falls deine JS-Klassen noch laden)
+            const btnAddJoint = document.getElementById('btn-add-joint');
+            if (btnAddJoint) {
+                btnAddJoint.addEventListener('click', () => {
+                    if (window.WazgManager) {
+                        window.WazgManager.dispatch('ADD_NODE', { x: 150, y: 150 });
+                    } else {
+                        termContent.innerHTML += "<br><span style='color:red;'>> FEHLER: Joint-Manager noch nicht an dieses UI gebunden.</span>";
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
