@@ -2,15 +2,73 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>WazG-OS v13 - Modular</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WazOs - Modular Workspace</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; margin: 0; }
-        #controls { padding: 10px; background: #111; border-bottom: 1px solid #333; }
-        #log-container { height: 100px; overflow-y: scroll; border-bottom: 1px solid #0f0; padding: 5px; }
-        #waz-svg-canvas { width: 100vw; height: calc(100vh - 160px); display: block; }
-        button { background: #222; color: #0f0; border: 1px solid #0f0; padding: 10px; cursor: pointer; }
+        /* Reset & Basis */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background: #000; 
+            color: #0f0; 
+            font-family: monospace; 
+            margin: 0; 
+            padding: 0;
+            /* Dynamische Viewport-Höhe verhindert Layout-Brüche auf Mobile */
+            height: 100vh;
+            height: 100dvh; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Das obere Control-Panel */
+        #controls { 
+            flex: 0 0 auto;
+            padding: 10px; 
+            background: #111; 
+            border-bottom: 1px solid #333;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        button { 
+            background: #222; 
+            color: #0f0; 
+            border: 1px solid #0f0; 
+            padding: 10px; 
+            cursor: pointer; 
+            font-family: monospace;
+            font-weight: bold;
+        }
         button:hover { background: #0f0; color: #000; }
+
+        /* Der Logger */
+        #log-container { 
+            flex: 0 0 100px;
+            overflow-y: auto; 
+            border-bottom: 1px solid #0f0; 
+            padding: 5px; 
+            background: #050505;
+            font-size: 12px;
+        }
+
+        /* Der Workspace für das SVG Canvas */
+        #workspace {
+            flex: 1 1 auto;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Das Canvas füllt den Workspace exakt aus */
+        #waz-svg-canvas { 
+            width: 100%; 
+            height: 100%; 
+            display: block; 
+        }
     </style>
 </head>
 <body>
@@ -20,12 +78,14 @@
     </div>
     
     <div id="log-container"></div>
-    <svg id="waz-svg-canvas"></svg>
+    
+    <div id="workspace">
+        <svg id="waz-svg-canvas"></svg>
+    </div>
 
     <script src="src/plugins/isg_997_WazLogger.js"></script>
     <script src="src/core/WazgManager.js"></script>
     <script src="src/core/WazgAnatomy.js"></script>
-    
     <script src="src/ui/UIController.js"></script>
 </body>
 </html>
