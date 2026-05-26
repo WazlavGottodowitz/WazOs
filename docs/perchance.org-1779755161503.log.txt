@@ -1,0 +1,173 @@
+VM18:3 let a of arr supported
+wazos-mobile-architecture-v2:2989 Allow attribute will take precedence over 'allowfullscreen'.
+wazos-mobile-architecture-v2:1336 transferSize (likely partial): 254975
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:525 Object
+VM18:2 async/await is supported
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:6212 Embed transfer size: /wazos-mobile-architecture-v2 225975
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:2895 text-to-image-plugin init: 35ms
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:2895 kv-plugin init: 3ms
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:2895 generator-stats-plugin init: 2ms
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:2895 ai-text-plugin init: 22ms
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:2895 wazos-mobile-architecture-v2 init: 4ms
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:4608 dummyOnloadRan
+wazos-mobile-architecture-v2:7333 apn: vli
+7760cb66-7f30-4783-afb4-6472e5fc777b.js:8 AINS | Version: 1.1.0 | Time: 3/25/2026, 3:42:08 PM
+7760cb66-7f30-4783-afb4-6472e5fc777b.js:2 Version: 1.0.6 - Time: 5/16/2026, 10:41:14 PM API
+wazos-mobile-architecture-v2:7528 debug whyads 993811
+XHR finished loading: POST "<URL>".
+XHR finished loading: POST "<URL>".
+XHR finished loading: POST "<URL>".
+XHR finished loading: POST "<URL>".
+XHR finished loading: POST "<URL>".
+XHR finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: POST "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+[Violation] Avoid using document.write(). <URL>
+wazos-mobile-architecture-v2:8036 Fetch failed loading: GET "https://perchance.org/api/count?keys=abt".
+(anonymous) @ wazos-mobile-architecture-v2:8036
+afr.php?z=0.01011&u=%7C3QBl3qApne1eoTu9p5EKwJF1j0WK2q1drouuQW9ZDO8%3D%7C&c1=jb4sGKXC0hor_UQHZ7x3Kq4…:53 [Violation] 'DOMContentLoaded' handler took 290ms
+[Violation] Forced reflow while executing JavaScript took 245ms
+wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:6130 Fetch failed loading: GET "https://perchance.org/api/cv?generatorName=wazos-mobile-architecture-v2&isFromEmbed=1&__cacheBust=0.6244461270143974".
+(anonymous) @ wazos-mobile-architecture-v2?__generatorLastEditTime=1779698212428:6130
+[Violation] 'setInterval' handler took 200ms
+clarity.js:2 [Violation] 'setInterval' handler took 94ms
+ThirdParty:58 [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+q.elements @ ThirdParty:58
+q.update @ ThirdParty:54
+S @ ThirdParty:66
+(anonymous) @ ThirdParty:21
+T @ ThirdParty:67
+(anonymous) @ ThirdParty:21
+setInterval
+h.setupWindow @ ThirdParty:72
+k @ ThirdParty:65
+k @ ThirdParty:64
+(anonymous) @ ThirdParty:73
+(anonymous) @ bootstrap.js:1
+B @ bootstrap.js:1
+r @ bootstrap.js:1
+I @ bootstrap.js:1
+(anonymous) @ ThirdParty:64
+(anonymous) @ ThirdParty:88
+PendingScript
+C @ bootstrap.js:2
+setTimeout
+B @ bootstrap.js:1
+r @ bootstrap.js:1
+(anonymous) @ bootstrap.js:72
+(anonymous) @ bootstrap.js:79
+K @ bootstrap.js:80
+w @ bootstrap.js:78
+v @ bootstrap.js:77
+x @ bootstrap.js:77
+(anonymous) @ adfserve/?CC=1&bn=88306701;rtbwp=7pvcuzxwuFV3dRicKBT186zboUFQG3yp0;rtbdata=p-xJM4UncvOKAqarPJ03bgzhRpr-fG1fTfXgGWQvWkLB0mivK_-OXfcmShVugsXp5pYGuXsYrIMxs2bZYMDJYPiFFq9Jte3N_2n82Ks1Wpf42pD3M04bOtAUQeQl7QI3PEc1B3dPrOymIfTxKDkPSko8Bbz70y4SbU6E0ixU3E-3eYSP56CrwzKJp3zs2ALyn_y3epU8t7w6aJnSOoma7eNEqc28cuHiYrKCFksopn8NmFzUxIOaNPm99KTGroqit5mwWuSWn6TmqmObDbIdC1ul2NP4kBgzTzJKrUUgxCKXX1KEfQrv_C9I0p5NKLY-oZidxGtGQcmc4mr-NnPnq6MuCTI0BoPTZqOx93v6a3NEuLr4WMTF0Zhu0h-lIAKlDrRxHVj2X8pzaF_jteZqiJ_ALwVFWhYCL5GPNv21zkyN8h82RmHfI-WEREd5dejrtrQ1hEDG-07EBycdIkRk-Q2;csid=151880;adxcmd=jESC2xjkmBY1;adxvars=JRpx44HhNlt42u1ywTJ-2i7-cK7Tqtophq1hNO2sYb4ZV7z8F14AbJG4dWAZeGGwmEdsD7CSkOIw64ksQRR4WzjRJah0rCSChxTwAPwUEUCwfksVDuhDA6StxRXeqX26mMYFOyXtx1OcvFN-dmVPvv9bFP9wGZRjLkkSrm-PdwMyBxpURLqFkPl_a_8UDMQKAklEm9KaFVKn2VCAAX4mvhx71IdZW3E6bu1geYFqFdzMnVMi2B8IZI9__Nlswh_-4mwAfyQv-0JkUWIa-tv3F3V2ppzkVY9F4mwAfyQv-0LKGbfq6uPVNlZciRcSSx4F0;pui=1-ZFGie_DSNnDHnW_WTFSSl-lqoVezQAUj48HYxJA_oNgIL4a7pRnn0j8wyFxzFI_J-lujoyynqbY1C-ZH1thfuxyx4SaaWfA7z_uuw_WOM1;;js=1;adfxid=1x;1075;set=de-DE|de-DE|926X832||300|50|32|8|3|7|1|;fd=0|0&CREFURL=https%3A%2F%2Fperchance.org:29
+PendingScript
+m @ bootstrap.js:10
+g.createBanner @ bootstrap.js:53
+c @ bootstrap.js:87
+(anonymous) @ bootstrap.js:87
+(anonymous) @ bootstrap.js:1
+B @ bootstrap.js:1
+r @ bootstrap.js:1
+I @ bootstrap.js:1
+(anonymous) @ bootstrap.js:87
+(anonymous) @ bootstrap.js:89
+PendingScript
+(anonymous) @ adfscript/?bn=88306701;rtbwp=7pvcuzxwuFV3dRicKBT186zboUFQG3yp0;rtbdata=p-xJM4UncvOKAqarPJ03bgzhRpr-fG1fTfXgGWQvWkLB0mivK_-OXfcmShVugsXp5pYGuXsYrIMxs2bZYMDJYPiFFq9Jte3N_2n82Ks1Wpf42pD3M04bOtAUQeQl7QI3PEc1B3dPrOymIfTxKDkPSko8Bbz70y4SbU6E0ixU3E-3eYSP56CrwzKJp3zs2ALyn_y3epU8t7w6aJnSOoma7eNEqc28cuHiYrKCFksopn8NmFzUxIOaNPm99KTGroqit5mwWuSWn6TmqmObDbIdC1ul2NP4kBgzTzJKrUUgxCKXX1KEfQrv_C9I0p5NKLY-oZidxGtGQcmc4mr-NnPnq6MuCTI0BoPTZqOx93v6a3NEuLr4WMTF0Zhu0h-lIAKlDrRxHVj2X8pzaF_jteZqiJ_ALwVFWhYCL5GPNv21zkyN8h82RmHfI-WEREd5dejrtrQ1hEDG-07EBycdIkRk-Q2;csid=151880;adxcmd=jESC2xjkmBY1;adxvars=JRpx44HhNlt42u1ywTJ-2i7-cK7Tqtophq1hNO2sYb4ZV7z8F14AbJG4dWAZeGGwmEdsD7CSkOIw64ksQRR4WzjRJah0rCSChxTwAPwUEUCwfksVDuhDA6StxRXeqX26mMYFOyXtx1OcvFN-dmVPvv9bFP9wGZRjLkkSrm-PdwMyBxpURLqFkPl_a_8UDMQKAklEm9KaFVKn2VCAAX4mvhx71IdZW3E6bu1geYFqFdzMnVMi2B8IZI9__Nlswh_-4mwAfyQv-0JkUWIa-tv3F3V2ppzkVY9F4mwAfyQv-0LKGbfq6uPVNlZciRcSSx4F0;pui=1-ZFGie_DSNnDHnW_WTFSSl-lqoVezQAUj48HYxJA_oNgIL4a7pRnn0j8wyFxzFI_J-lujoyynqbY1C-ZH1thfuxyx4SaaWfA7z_uuw_WOM1;:9
+PendingScript
+value @ VM194:1
+Zt @ VM194:1
+value @ VM194:1
+value @ VM194:1
+An @ VM194:1
+Mn @ VM194:1
+t @ VM194:1
+(anonymous) @ VM194:1
+(anonymous) @ VM194:1
+(anonymous) @ VM194:1
+(anonymous) @ about:srcdoc:12
+(anonymous) @ about:srcdoc:5
+PendingScript
+(anonymous) @ about:srcdoc:12
+(anonymous) @ about:srcdoc:5
+Promise.then
+(anonymous) @ about:srcdoc:3
+Adform.DHTML.js?bv=641:15 [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+wa @ Adform.DHTML.js?bv=641:15
+(anonymous) @ Adform.DHTML.js?bv=641:65
+(anonymous) @ Adform.DHTML.js?bv=641:97
+PendingScript
+b @ Standard:129
+(anonymous) @ VM215:2
+b @ Standard:129
+(anonymous) @ 18204470.js?ADFassetID=18204470&bv=257:1
+PendingScript
+b @ Standard:129
+(anonymous) @ 18204470.js?ADFassetID=18204470&bv=257:1
+PendingScript
+d @ VM211:1
+setTimeout
+C @ VM211:2
+eval @ VM211:2
+(anonymous) @ Standard:127
+Enabler.js:216  [  0.003s] [studio.sdk]  
+Enabler.js:216  [  0.056s] [studio.sdk] Using default ad parameters in test environment. Simulating local events. 
+[Violation] 'setInterval' handler took 122ms
+[Violation] 'setInterval' handler took 65ms
+[Violation] Forced reflow while executing JavaScript took 52ms
