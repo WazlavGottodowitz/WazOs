@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WazOS // Nocturne UI</title>
+  <link rel="stylesheet" href="./css/theme.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="ambient ambient-c"></div>
+
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark">
+        <span>WZ</span>
+        <small>🍌</small>
+      </div>
+      <div>
+        <p class="eyebrow">WazOS / banana glass menu</p>
+        <h1>NOCTURNE RENDER CONSOLE</h1>
+      </div>
+    </div>
+
+    <div class="menu-dock-shell">
+      <div class="menu-dock-header">
+        <span class="dock-caption">Menu</span>
+        <span class="banana-pill">banana mode</span>
+      </div>
+      <nav class="quick-nav" aria-label="Section shortcuts">
+        <button class="nav-chip active" data-scroll-target="forge-panel" type="button"><span class="nav-glyph">✦</span><span>Forge</span></button>
+        <button class="nav-chip" data-scroll-target="stage-panel" type="button"><span class="nav-glyph">◉</span><span>Stage</span></button>
+        <button class="nav-chip" data-scroll-target="queue-panel" type="button"><span class="nav-glyph">▣</span><span>Queue</span></button>
+        <button class="nav-chip" data-scroll-target="bridge-panel" type="button"><span class="nav-glyph">⇄</span><span>Bridge</span></button>
+        <button class="nav-chip" data-scroll-target="console-panel" type="button"><span class="nav-glyph">⌘</span><span>Console</span></button>
+      </nav>
+    </div>
+
+    <div class="status-row">
+      <span class="status-pill" id="mode-pill">Mode: Boot</span>
+      <span class="status-pill" id="bridge-pill">Bridge: Waiting</span>
+      <span class="status-pill glow" id="render-pill">Render: Idle</span>
+    </div>
+  </header>
+
+  <main class="workspace-grid">
+    <section class="panel prompt-panel" id="forge-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Prompt forge</p>
+          <h2>Composition</h2>
+        </div>
+        <span class="tiny-badge">Editable</span>
+      </div>
+
+      <div class="field-stack">
+        <div class="field-group">
+          <label for="prompt-input">Prompt</label>
+          <textarea id="prompt-input" spellcheck="false"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label for="negative-input">Negative prompt</label>
+          <textarea id="negative-input" spellcheck="false"></textarea>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field-group">
+            <label for="style-select">Style</label>
+            <select id="style-select">
+              <option value="">Raw / none</option>
+              <option value="cinematic cyberpunk, dark neon reflections">Cyberpunk</option>
+              <option value="luxury editorial photography, premium fashion lighting">Editorial</option>
+              <option value="anime key visual, sharp linework, stylized cel shading">Anime</option>
+              <option value="photorealistic, moody contrast, high fidelity">Photoreal</option>
+              <option value="concept art, cinematic matte painting, volumetric lighting">Concept Art</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="resolution-select">Resolution</label>
+            <select id="resolution-select">
+              <option value="512x512">512 × 512</option>
+              <option value="768x768">768 × 768</option>
+              <option value="1024x1024">1024 × 1024</option>
+              <option value="512x768">512 × 768</option>
+              <option value="768x512">768 × 512</option>
+              <option value="1024x576">1024 × 576</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-grid two compact">
+          <div class="field-group">
+            <label for="batch-input">Batch</label>
+            <input id="batch-input" type="number" min="1" max="8">
+          </div>
+          <div class="field-group">
+            <label for="seed-input">Seed / token</label>
+            <input id="seed-input" type="text" placeholder="auto">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="flags-input">Flags / params</label>
+          <input id="flags-input" type="text" placeholder="--stylize 300 --chaos 8">
+        </div>
+      </div>
+
+      <div class="action-column">
+        <button class="action-button primary" id="generate-button" type="button">Generate render</button>
+        <button class="action-button secondary" id="buffer-button" type="button">Throw frame to queue</button>
+      </div>
+
+      <div class="mini-actions">
+        <button class="ghost-button" id="copy-prompt-button" type="button">Copy prompt</button>
+        <button class="ghost-button" id="open-image-button" type="button">Open image</button>
+        <button class="ghost-button danger" id="reset-button" type="button">Reset</button>
+      </div>
+
+      <div class="notes-card">
+        <p class="eyebrow">What changed</p>
+        <ul>
+          <li>Standalone fallback renderer for raw direct-open mode.</li>
+          <li>Formalized bridge contract for parent ↔ child rendering.</li>
+          <li>Perchance-friendly postMessage flow with request correlation.</li>
+          <li>Fancy dark UI with responsive preview scaling and queue dock.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel stage-panel" id="stage-panel">
+      <div class="panel-header wide-gap">
+        <div>
+          <p class="eyebrow">Render stage</p>
+          <h2>Live buffer</h2>
+        </div>
+
+        <div class="toolbar-cluster">
+          <div class="toolbar-readout">
+            <span class="toolbar-label">Buffer</span>
+            <strong id="resolution-readout">768 × 768</strong>
+          </div>
+          <div class="toolbar-readout">
+            <span class="toolbar-label">Frames</span>
+            <strong id="frame-count-readout">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-toolbar">
+        <label class="range-control" for="zoom-slider">
+          <span>Zoom</span>
+          <input id="zoom-slider" type="range" min="40" max="160" value="100">
+          <strong id="zoom-readout">100%</strong>
+        </label>
+        <div class="toolbar-actions">
+          <button class="ghost-button" id="fit-button" type="button">Fit</button>
+          <button class="ghost-button" id="refresh-button" type="button">Re-run</button>
+        </div>
+      </div>
+
+      <div class="stage-wrap" id="stage-wrap">
+        <div class="frame-shell" id="frame-shell">
+          <img id="render-image" alt="Render preview">
+          <div class="frame-overlay" id="frame-overlay">SYSTEM READY</div>
+          <div class="stage-chrome top-left"></div>
+          <div class="stage-chrome top-right"></div>
+          <div class="stage-chrome bottom-left"></div>
+          <div class="stage-chrome bottom-right"></div>
+        </div>
+      </div>
+
+      <div class="preview-meta-grid">
+        <article class="meta-card">
+          <span class="meta-label">Renderer source</span>
+          <strong id="source-readout">boot</strong>
+        </article>
+        <article class="meta-card">
+          <span class="meta-label">Request</span>
+          <strong id="request-readout">—</strong>
+        </article>
+        <article class="meta-card wide">
+          <span class="meta-label">Bridge note</span>
+          <strong id="bridge-note">Waiting for initialization.</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel queue-panel" id="queue-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Sequence dock</p>
+          <h2>Buffered frames</h2>
+        </div>
+        <button class="ghost-button danger" id="clear-queue-button" type="button">Clear</button>
+      </div>
+
+      <div class="queue-grid" id="queue-grid"></div>
+    </section>
+
+    <section class="panel bridge-panel" id="bridge-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Bridge contract</p>
+          <h2>Parent / child schema</h2>
+        </div>
+        <span class="tiny-badge">v2</span>
+      </div>
+
+      <div class="bridge-card-grid">
+        <article class="contract-card">
+          <h3>Outbound</h3>
+          <pre>type: "WAZ_GENERATE"
+requestId: string
+prompt: string
+negative: string
+resolution: "WxH"
+flags: string
+batch: number
+seed: string</pre>
+        </article>
+        <article class="contract-card">
+          <h3>Inbound success</h3>
+          <pre>type: "WAZ_RENDER_DONE"
+requestId: string
+url: string
+meta?: object</pre>
+        </article>
+        <article class="contract-card">
+          <h3>Inbound error</h3>
+          <pre>type: "WAZ_RENDER_ERROR"
+requestId: string
+error: string</pre>
+        </article>
+        <article class="contract-card">
+          <h3>Pipeline</h3>
+          <pre>1. Prompt Forge
+2. Bridge Dispatch
+3. Parent Renderer
+4. Frame Sync
+5. Queue Dock</pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel console-panel" id="console-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Event console</p>
+          <h2>System log</h2>
+        </div>
+        <span class="tiny-badge" id="console-mode-badge">live</span>
+      </div>
+      <div class="console-log" id="console-log" role="log" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
