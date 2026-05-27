@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WazOs - Pro Interface</title>
+    <style>
+        /* CSS Variablen - Nano Matrix Theme */
+        :root {
+            --bg-main: #000000;
+            --bg-panel: #0a0a0a;
+            --bg-input: #1a1a1a;
+            --accent: #00ff00;
+            --text: #00dd00;
+            --text-dim: #008800;
+            --border: 1px solid #005500;
+            --header-h: 30px;
+            --term-h: 65px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: monospace; }
+        
+        body, html {
+            width: 100%; height: 100%; overflow: hidden;
+            background: var(--bg-main); color: var(--text); font-size: 11px;
+        }
+
+        /* --- HEADER & TICKER --- */
+        #waz-tabs {
+            position: absolute; top: 0; left: 0; width: 100%; height: var(--header-h);
+            background: var(--bg-panel); border-bottom: var(--border);
+            display: flex; align-items: center; padding: 0 5px; gap: 2px;
+            overflow-x: auto; white-space: nowrap; z-index: 10;
+        }
+
+        .tab-btn {
+            background: transparent; color: var(--text-dim); border: none; 
+            padding: 5px 10px; cursor: pointer; font-size: 10px; font-weight: bold; text-transform: uppercase;
+        }
+        .tab-btn.active { color: var(--accent); background: #002200; border: 1px solid #005500; border-bottom: none; }
+
+        #nano-ticker {
+            margin-left: auto; color: var(--accent); font-size: 9px; padding: 0 5px;
+            text-shadow: 0 0 2px #00ff00;
+            max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* --- WORKSPACES --- */
+        #workspace-container {
+            position: absolute; top: var(--header-h); left: 0; right: 0; bottom: var(--term-h);
+            overflow: hidden;
+        }
+
+        .panel { width: 100%; height: 100%; display: none; padding: 5px; }
+        .panel.active { display: block; }
+
+        /* --- LAYOUT UTILS --- */
+        .flex-row { display: flex; gap: 5px; align-items: center; margin-bottom: 5px; width: 100%; }
+        .flex-col { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+        
+        /* --- INPUTS & BUTTONS --- */
+        label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
+        input, textarea, select { 
+            background: var(--bg-input); color: var(--accent); border: var(--border); 
+            padding: 4px; font-size: 10px; width: 100%; resize: none; 
+        }
+        input:focus, textarea:focus, select:focus { outline: 1px solid var(--accent); }
+        
+        .btn { 
+            background: #002200; color: var(--accent); border: var(--border); 
+            padding: 4px 8px; cursor: pointer; font-size: 10px; text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .btn:active { background: var(--accent); color: #000; }
+
+        /* --- RESIZABLE STUDIO GRID LAYOUT --- */
+        .studio-layout { display: flex; width: 100%; height: 100%; position: relative; overflow: hidden; }
+        
+        .controls-col { 
+            width: 280px; min-width: 200px; max-width: 500px;
+            background: var(--bg-panel); padding: 5px; border: var(--border); overflow-y: auto; 
+        }
+        
+        /* Draggable Splitter Border */
+        .resize-handle {
+            width: 6px; cursor: col-resize; background: #001100;
+            border-left: 1px solid #004400; border-right: 1px solid #004400;
+            height: 100%; transition: background 0.2s; z-index: 5;
+        }
+        .resize-handle:hover, .resize-handle.active { background: var(--accent); }
+        
+        .preview-col { 
+            flex: 1; display: flex; flex-direction: column; border: var(--border); background: #050505; 
+            position: relative; overflow: hidden;
+        }
+        
+        .preview-header { 
+            display: flex; justify-content: space-between; padding: 2px 5px; 
+            background: var(--bg-input); border-bottom: var(--border); align-items: center;
+        }
+        
+        .preview-canvas {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            background-size: 20px 20px;
+            background-image: linear-gradient(to right, #111 1px, transparent 1px), linear-gradient(to bottom, #111 1px, transparent 1px);
+            overflow: auto; position: relative; padding: 10px;
+        }
+        
+        /* Simulierter Frame-Buffer mit fester Pixel-Auflösung */
+        #canvas-frame-wrapper {
+            width: 512px; height: 512px;
+            border: 1px dashed var(--text-dim);
+            display: flex; justify-content: center; align-items: center;
+            background: #000; overflow: hidden; transition: width 0.2s, height 0.2s;
+            position: relative;
+        }
+        
+        #render-img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.2s; }
+
+        /* --- MASCHINENRAUM --- */
+        .plugin-chain { border: var(--border); padding: 5px; background: var(--bg-input); min-height: 100px; margin-top: 5px;}
+        .plugin-item { display: flex; justify-content: space-between; background: #000; border: 1px solid #333; padding: 2px 5px; margin-bottom: 2px; font-size: 9px; }
+
+        /* --- NANO TERMINAL --- */
+        #nano-terminal {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: var(--term-h);
+            background: #000; border-top: 1px solid var(--accent); display: flex; flex-direction: column; z-index: 10;
+        }
+        #term-log {
+            flex: 1; overflow-y: auto; padding: 2px 5px; font-size: 8.5px; 
+            line-height: 1.1; color: #00aa00;
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="waz-tabs">
+        <button class="tab-btn active" data-target="tab-studio">T2I</button>
+        <button class="tab-btn" data-target="tab-maschinenraum">CORE</button>
+        <button class="tab-btn" data-target="tab-timeline">SEQ</button>
+        <div id="nano-ticker">[ 148BPM | VRAM:OK ]</div>
+    </nav>
+
+    <div id="workspace-container">
+        
+        <div id="tab-studio" class="panel active">
+            <div class="studio-layout">
+                
+                <div class="controls-col" id="controls-panel">
+                    <div class="flex-col">
+                        <label>Prompt</label>
+                        <textarea id="t2i-prompt" rows="3">A cybernetic skull with neon green tubes, highly detailed, octane render</textarea>
+                    </div>
+                    
+                    <div class="flex-col" style="margin-top:5px;">
+                        <label>Negative</label>
+                        <input type="text" id="t2i-negative" value="blurry, low quality, distortion">
+                    </div>
+
+                    <div class="flex-row" style="margin-top:5px;">
+                        <div class="flex-col" style="flex:1;">
+                            <label>Style</label>
+                            <select id="t2i-style">
+                                <option value="">Raw / None</option>
+                                <option value="cyberpunk style, neon colors" selected>Cyberpunk</option>
+                                <option value="anime style, studio ghibli">Anime</option>
+                                <option value="photorealistic, 8k, ultra detailed">Photoreal</option>
+                            </select>
+                        </div>
+                        <div class="flex-col" style="flex:1;">
+                            <label>Resolution Preset</label>
+                            <select id="t2i-res-preset" onchange="setFrameSize(this.value)">
+                                <option value="512x512">512 x 512</option>
+                                <option value="768x768" selected>768 x 768</option>
+                                <option value="512x768">512 x 768</option>
+                                <option value="768x512">768 x 512</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex-row" style="margin-top:5px;">
+                        <div class="flex-col" style="flex:3;">
+                            <label>Flags / Params</label>
+                            <input type="text" value="--v 5.2 --ar 1:1">
+                        </div>
+                        <div class="flex-col" style="flex:1;">
+                            <label>Batch</label>
+                            <input type="number" id="t2i-batch" value="1" min="1" max="4">
+                        </div>
+                    </div>
+
+                    <div class="flex-row" style="margin-top:10px; flex-direction: column; gap:4px;">
+                        <button class="btn" style="width:100%; background: var(--accent); color: #000; font-weight:bold;" onclick="generateImage()">GENERATE</button>
+                        <button class="btn" style="width:100%; background:#004400; color:#fff;" onclick="throwFrame()">🚀 FRAME THROWER</button>
+                    </div>
+                </div>
+
+                <div class="resize-handle" id="panel-resizer"></div>
+
+                <div class="preview-col">
+                    <div class="preview-header">
+                        <span style="font-size:9px; color:var(--text-dim);" id="frame-dimensions-display">BUFFER: 768x768 px</span>
+                        <div class="flex-row" style="width:auto;">
+                            <label>ZOOM</label>
+                            <input type="range" id="preview-zoom" min="20" max="150" value="100" style="width:60px; height:2px;">
+                        </div>
+                    </div>
+                    <div class="preview-canvas">
+                        <div id="canvas-frame-wrapper" style="width:768px; height:768px;">
+                            <img id="render-img" src="https://image.pollinations.ai/prompt/A%20cybernetic%20skull%20with%20neon%20green%20tubes,%20highly%20detailed,%20matrix%20style?width=768&height=768&nologo=true" alt="Render">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="tab-maschinenraum" class="panel">
+            <label>PLUGIN REIHENFOLGE (GUI)</label>
+            <div class="plugin-chain">
+                <div class="plugin-item"><span>1. ImageGen_Plugin ({import})</span></div>
+                <div class="plugin-item"><span>2. FrameThrower_Core</span></div>
+            </div>
+        </div>
+
+        <div id="tab-timeline" class="panel">
+            <label>SEQUENCE EDITOR</label>
+            <div id="timeline-buffer-view" style="display:flex; gap:10px; overflow-x:auto; padding:10px; background:#050505; border:var(--border); margin-top:5px; min-height:120px;">
+                <span style="color:var(--text-dim); font-size:9px;">No frames buffered. Fire the FrameThrower!</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="nano-terminal">
+        <div style="background: #111; border-bottom: 1px solid #333; padding: 2px 5px; font-size: 8px; color: var(--text-dim);">
+            >_ SYSTEM.LOG
+        </div>
+        <div id="term-log">
+            > WazOs Architecture Engine Active.<br>
+            > Frame-Buffer bound to Plugin Channel.
+        </div>
+    </div>
+
+    <script>
+        // --- 1. ID-basiertes Tab Switching & Swipe ---
+        const tabsArray = ['tab-studio', 'tab-maschinenraum', 'tab-timeline'];
+        let currentTabIndex = 0;
+
+        function switchTab(targetId) {
+            const targetPanel = document.getElementById(targetId);
+            if (!targetPanel) return;
+            
+            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            targetPanel.classList.add('active');
+            const activeBtn = document.querySelector(`[data-target="${targetId}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            currentTabIndex = tabsArray.indexOf(targetId);
+            logTerminal(`Switched workspace to ${targetId}`);
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.getAttribute('data-target')));
+        });
+
+        // --- 2. Panel Resizer (Click & Drag on Border) ---
+        const resizer = document.getElementById('panel-resizer');
+        const controlsPanel = document.getElementById('controls-panel');
+        let isResizing = false;
+
+        function startResize() { isResizing = true; resizer.classList.add('active'); }
+        function endResize() { isResizing = false; resizer.classList.remove('active'); }
+        function resize(e) {
+            if (!isResizing) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const newWidth = clientX - controlsPanel.getBoundingClientRect().left;
+            if (newWidth > 180 && newWidth < 500) {
+                controlsPanel.style.width = `${newWidth}px`;
+            }
+        }
+
+        resizer.addEventListener('mousedown', startResize);
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', endResize);
+
+        resizer.addEventListener('touchstart', startResize, {passive: true});
+        document.addEventListener('touchmove', resize, {passive: true});
+        document.addEventListener('touchend', endResize);
+
+        // --- 3. Preview Size Presets (768x768, 512x768, 768x512) ---
+        function setFrameSize(preset) {
+            const [w, h] = preset.split('x');
+            const wrapper = document.getElementById('canvas-frame-wrapper');
+            const display = document.getElementById('frame-dimensions-display');
+            
+            wrapper.style.width = `${w}px`;
+            wrapper.style.height = `${h}px`;
+            display.innerText = `BUFFER: ${w}x${h} px`;
+            logTerminal(`Frame-Buffer reconfigured: ${w}x${h}px`);
+        }
+
+        // Zoom Slider Logik
+        const zoomSlider = document.getElementById('preview-zoom');
+        const renderImg = document.getElementById('render-img');
+        zoomSlider.addEventListener('input', (e) => {
+            renderImg.style.transform = `scale(${e.target.value / 100})`;
+        });
+
+        // --- 4. FrameThrower (Buffer directly to Timeline) ---
+        const timelineBuffer = [];
+
+        function throwFrame() {
+            const imgElement = document.getElementById('render-img');
+            const view = document.getElementById('timeline-buffer-view');
+            
+            if (!imgElement || imgElement.style.opacity === "0.3") {
+                logTerminal("<span style='color:red;'>ERROR: Pipeline empty or rendering.</span>");
+                return;
+            }
+
+            const currentFrame = imgElement.src;
+            timelineBuffer.push(currentFrame);
+            logTerminal(`<span style='color:var(--accent);'>>>> FRAME THROWN to SEQ (Slot #${timelineBuffer.length})</span>`);
+
+            // UI für Timeline updaten
+            let html = "";
+            timelineBuffer.forEach((src, idx) => {
+                html += `
+                <div style="position:relative; width:90px; height:90px; border:1px solid var(--accent); background:#000; flex-shrink:0;">
+                    <img src="${src}" style="width:100%; height:100%; object-fit:contain;">
+                    <span style="position:absolute; bottom:1px; left:1px; background:rgba(0,0,0,0.8); padding:1px 3px; font-size:8px; color:var(--accent);">F_${idx+1}</span>
+                </div>`;
+            });
+            view.innerHTML = html;
+        }
+
+        // --- 5. T2I Pipeline Bridge ---
+        function generateImage() {
+            const promptElement = document.getElementById('t2i-prompt');
+            const styleElement = document.getElementById('t2i-style');
+            const negElement = document.getElementById('t2i-negative');
+            const resPreset = document.getElementById('t2i-res-preset').value;
+            const imgElement = document.getElementById('render-img');
+            
+            if (!promptElement || !imgElement) return;
+            const rawPrompt = promptElement.value.trim();
+            if (rawPrompt === "") return;
+
+            const finalPrompt = styleElement.value ? `${rawPrompt}, ${styleElement.value}` : rawPrompt;
+            
+            logTerminal(`> Requesting plugin pipeline for [${resPreset}]...`);
+            imgElement.style.opacity = "0.3"; 
+
+            window.parent.postMessage({
+                type: "WAZ_GENERATE",
+                prompt: finalPrompt,
+                negative: negElement.value,
+                resolution: resPreset
+            }, "*");
+        }
+
+        window.addEventListener("message", (event) => {
+            const imgElement = document.getElementById('render-img');
+            if (!imgElement) return;
+
+            if (event.data && event.data.type === "WAZ_RENDER_DONE") {
+                imgElement.src = event.data.url;
+                imgElement.style.opacity = "1";
+                logTerminal("<span style='color:var(--accent);'>> Buffer synced. Plugin output online.</span>");
+            }
+            if (event.data && event.data.type === "WAZ_RENDER_ERROR") {
+                imgElement.style.opacity = "1";
+                logTerminal(`<span style='color:red;'>> PLUGIN CRASH: ${event.data.error}</span>`);
+            }
+        });
+
+        // Nano Logger
+        const termLog = document.getElementById('term-log');
+        function logTerminal(msg) {
+            const time = new Date().toLocaleTimeString('de-DE', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric" });
+            termLog.innerHTML += `<br><span style="color:#555;">[${time}]</span> ${msg}`;
+            termLog.scrollTop = termLog.scrollHeight;
+        }
+    </script>
+</body>
+</html>
