@@ -1,0 +1,108 @@
+:root {
+  --bg-main: #000000;
+  --bg-panel: #0a0a0a;
+  --bg-input: #131313;
+  --accent: #00ff66;
+  --accent-dim: #00aa44;
+  --text: #ccffd8;
+  --text-dim: #73b780;
+  --border-color: #0b5224;
+  --border: 1px solid var(--border-color);
+  --danger: #ff5757;
+  --radius: 10px;
+  --font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body, html {
+  width: 100%; height: 100%; overflow-x: hidden;
+  background: var(--bg-main); color: var(--text);
+  font-family: var(--font); font-size: 11px;
+}
+
+/* Ambient Glow FX */
+.ambient { position: fixed; width: 300px; height: 300px; background: rgba(0, 255, 102, 0.01); filter: blur(100px); pointer-events: none; z-index: 0; }
+.ambient-a { top: 10%; left: 10%; }
+.ambient-b { bottom: 10%; right: 10%; }
+
+/* Sticky Tab Navigation */
+.waz-tabs {
+  position: sticky; top: 0; left: 0; width: 100%; height: 42px;
+  background: var(--bg-panel); border-bottom: var(--border);
+  display: flex; z-index: 100;
+}
+.tab-btn {
+  flex: 1; background: transparent; border: none;
+  color: var(--text-dim); font-family: var(--font); font-size: 11px;
+  text-transform: uppercase; cursor: pointer; transition: all 0.2s ease;
+}
+.tab-btn.active {
+  color: var(--accent); background: rgba(0, 255, 102, 0.04);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* Viewport & Container Panels */
+.waz-viewport { padding: 8px; display: flex; flex-direction: column; gap: 8px; z-index: 10; position: relative; }
+.panel { background: var(--bg-panel); border: var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; position: relative; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.eyebrow { font-size: 9px; text-transform: uppercase; color: var(--text-dim); letter-spacing: 1px; }
+h2 { font-size: 12px; color: var(--text); font-weight: normal; }
+
+/* Tab Panel Visibility (Der Switcher Kern) */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Form Elements Framework */
+textarea, input, select {
+  width: 100%; background: var(--bg-input); border: var(--border);
+  color: var(--text); padding: 10px; font-family: var(--font); font-size: 11px;
+  border-radius: 6px; outline: none;
+}
+textarea { height: 65px; resize: none; }
+.input-group { margin-bottom: 8px; }
+.input-group label { display: block; font-size: 9px; margin-bottom: 4px; color: var(--text-dim); text-transform: uppercase; }
+
+/* Action Buttons Grid */
+.waz-btn {
+  padding: 8px 16px; border: var(--border); background: var(--bg-input);
+  color: var(--text); font-family: var(--font); font-weight: bold;
+  border-radius: 6px; cursor: pointer; text-transform: uppercase;
+}
+.waz-btn.primary { border-color: var(--accent); color: var(--accent); width: 100%; padding: 11px; }
+.waz-btn.danger { border-color: var(--danger); color: var(--danger); }
+
+/* Central Render Stage Adaptive Box */
+.stage-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.frame-container { position: relative; width: 100%; max-width: 512px; aspect-ratio: 1; background: #000; border: var(--border); border-radius: 6px; overflow: hidden; }
+.frame-viewport { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+#render-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.frame-overlay { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); padding: 3px 6px; border: var(--border); font-size: 9px; border-radius: 4px; pointer-events: none; color: var(--accent); }
+
+/* Under-Image Bar Controls */
+.under-image-bar { display: flex; gap: 8px; width: 100%; max-width: 512px; margin-top: 8px; }
+.action-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px; background: var(--bg-input); border: var(--border);
+  color: var(--text); border-radius: 6px; font-family: var(--font); font-weight: bold; font-size: 11px; cursor: pointer;
+  transition: background 0.1s;
+}
+.action-btn:active { background: #19241c; }
+.action-btn.thrower { border-color: var(--danger); color: var(--danger); background: rgba(255,87,87,0.01); }
+.action-btn.thrower:active { background: rgba(255,87,87,0.1); }
+
+/* Sequence Buffer Thumbnails Layout */
+.queue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 8px; margin-top: 8px; }
+.queue-card { border: var(--border); background: var(--bg-input); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+.queue-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.queue-footer { padding: 4px 6px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); font-size: 9px; }
+.del-btn { background: transparent; border: none; color: var(--danger); cursor: pointer; font-weight: bold; font-size: 12px; }
+
+/* Micro Logger Panel Rules */
+.console-log { height: 58px; overflow-y: auto; font-size: 10px; display: flex; flex-direction: column-reverse; }
+.log-line { margin-bottom: 2px; }
+.log-time { color: #3e4c3f; margin-right: 6px; }
+.log-message.success { color: var(--accent); }
+.log-message.warn { color: #ffc857; }
+.log-message.danger { color: var(--danger); }
+.status-pill { font-size: 9px; border: var(--border); padding: 1px 4px; border-radius: 4px; text-transform: uppercase; margin-left: 4px; color: var(--text-dim); }
+.status-pill.warn { border-color: #ffc857; color: #ffc857; }
