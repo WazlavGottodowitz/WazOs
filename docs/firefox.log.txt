@@ -1,0 +1,86 @@
+let a of arr supported wazos-git-basis-v2 line 206 > eval:3:62
+Feature Policy: Unbekannte Funktionalität (Feature) "clipboard-write" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "accelerometer" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "encrypted-media" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "gyroscope" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "hid" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "idle-detection" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "magnetometer" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "midi" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "picture-in-picture" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "usb" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "window-management" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "xr-spatial-tracking" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "local-network-access" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "clipboard-write" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "accelerometer" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "encrypted-media" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "gyroscope" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "hid" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "idle-detection" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "magnetometer" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "midi" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "picture-in-picture" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "usb" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "window-management" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "xr-spatial-tracking" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "local-network-access" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "clipboard-write" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "accelerometer" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "encrypted-media" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "gyroscope" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "hid" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "idle-detection" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "magnetometer" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "midi" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "picture-in-picture" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "usb" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "window-management" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "xr-spatial-tracking" wird ignoriert. wazos-git-basis-v2
+Feature Policy: Unbekannte Funktionalität (Feature) "local-network-access" wird ignoriert. wazos-git-basis-v2
+Referrer Policy: Die weniger eingeschränkte Referrer Policy "no-referrer-when-downgrade" für die Website-übergreifende Anfrage wird ignoriert: https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447 v833ccba57c9e4d2798f2e76cebdd09a11778172276447
+unreachable code after return statement wazos-git-basis-v2:7571:13
+async/await is supported wazos-git-basis-v2 line 206 > eval:2:80
+transferSize (likely partial): 255615 wazos-git-basis-v2:1332:21
+Object { toString: toString() }
+wazos-git-basis-v2:525:15
+onmozfullscreenchange sollte nicht mehr verwendet werden. wazos-git-basis-v2:5003:23
+onmozfullscreenerror sollte nicht mehr verwendet werden. wazos-git-basis-v2:5003:23
+Embed transfer size: /wazos-git-basis-v2 0 wazos-git-basis-v2:6212:17
+ai-text-plugin init: 60ms wazos-git-basis-v2:2895:13
+generator-stats-plugin init: 6ms wazos-git-basis-v2:2895:13
+kv-plugin init: 3ms wazos-git-basis-v2:2895:13
+text-to-image-plugin init: 24ms wazos-git-basis-v2:2895:13
+wazos-git-basis-v2 init: 3ms wazos-git-basis-v2:2895:13
+dummyOnloadRan wazos-git-basis-v2:4608:48
+Modul-Quell-URI ist in diesem Dokument nicht erlaubt: "https://perchance.org/bridge.js". wazos-git-basis-v2
+Modul-Quell-URI ist in diesem Dokument nicht erlaubt: "https://perchance.org/renderer.js". wazos-git-basis-v2
+Modul-Quell-URI ist in diesem Dokument nicht erlaubt: "https://perchance.org/state.js". wazos-git-basis-v2
+Modul-Quell-URI ist in diesem Dokument nicht erlaubt: "https://perchance.org/timeline.js". wazos-git-basis-v2
+Modul-Quell-URI ist in diesem Dokument nicht erlaubt: "https://perchance.org/ui.js". wazos-git-basis-v2
+Referrer Policy: Die weniger eingeschränkte Referrer Policy "no-referrer-when-downgrade" für die Website-übergreifende Anfrage wird ignoriert: https://www.googletagmanager.com/gtag/js?id=G-YJWJRNESS5 js
+Referrer Policy: Die weniger eingeschränkte Referrer Policy "no-referrer-when-downgrade" für die Website-übergreifende Anfrage wird ignoriert: https://www.googletagmanager.com/gtag/js?id=UA-36798824-24&cx=c&gtm=4e65r2 js
+Der Wert des Attributs "expires" für das Cookie "_ga_YJWJRNESS5" wurde überschrieben. wazos-git-basis-v2
+Referrer Policy: Die weniger eingeschränkte Referrer Policy "no-referrer-when-downgrade" für die Website-übergreifende Anfrage wird ignoriert: https://www.google.de/ads/ga-audiences?v=1&t=sr&slf_rd=1&_r=4&tid=G-YJWJRNESS5&cid=39836404.1760500025&gtm=45je65r2v894922943za200zd894922943&rcb=17&aip=1&dma=1&dma_cps=a&gcd=13l3l3l2l1l1&npa=1&frm=0&tag_exp=0~115616986~115938465~115938468~119034491&z=391694582 ga-audiences
+Referrer Policy: Die weniger eingeschränkte Referrer Policy "no-referrer-when-downgrade" für die Website-übergreifende Anfrage wird ignoriert: https://www.google-analytics.com/analytics.js analytics.js
+Reporting-Kopfzeile: fehlerhafter JSON-Wert empfangen collect
+apn: vli wazos-git-basis-v2:7345:23
+Cookie-Warnungen 3
+Reporting-Kopfzeile: fehlerhafter JSON-Wert empfangen collect
+A resource is blocked by OpaqueResponseBlocking, please check browser console for details. tf-v1.jpeg
+A resource is blocked by OpaqueResponseBlocking, please check browser console for details. cc.jpeg
+A resource is blocked by OpaqueResponseBlocking, please check browser console for details. pi.jpeg
+Für "https://useast.quantumdex.io/auction/pbjs" wurde partitionierter Cookie- oder Speicherzugriff verwendet, da es im Kontext eines Drittanbieters geladen wurde und dynamische Zustandspartitionierung aktiv ist.
+Diese Seite befindet sich im Kompatibilitätsmodus (Quirks). Das Seitenlayout kann beeinflusst werden. Verwenden Sie für den Standardmodus "<!DOCTYPE html>". 7760cb66-7f30-4783-afb4-6472e5fc777b.js:2:260532
+Source-Map-Fehler: request failed with status 404
+Ressourcen-Adresse: https://perchance.org/wazos-git-basis-v2
+Source-Map-Adresse: split.min.js.map
+Source-Map-Fehler: request failed with status 404
+Ressourcen-Adresse: https://perchance.org/lib/htmlparser2-v9.1.0-bundle.mjs
+Source-Map-Adresse: htmlparser2.bundle.mjs.map
+Source-Map-Fehler: request failed with status 404
+Ressourcen-Adresse: https://perchance.org/lib/eslint-linter-browserify-v9.14.0-bundle.mjs
+Source-Map-Adresse: eslint-linter-browserify.bundle.mjs.map
+Source-Map-Fehler: request failed with status 404
+Ressourcen-Adresse: https://cdn.vlitag.com/assets/plugins/hls.js/hls.min.js?v=1.01
+Source-Map-Adresse: hls.min.js.map
