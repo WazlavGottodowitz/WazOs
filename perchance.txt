@@ -1,0 +1,28 @@
+// --- PLUGIN GUARD v2 - PERCHANCE SAFE ---
+generateImage = {import:text-to-image-plugin}
+storage = {import:kv-plugin}
+imageUpload = {import:upload-plugin}
+date = {import:date-plugin}
+
+pluginGuard = [generateImage, storage, imageUpload, date]
+guardCheck = "{generateImage}"
+
+$meta
+  title = WazOS Step3 Modular Rack
+  description = 19inch video rack with 16-agent blind continuity + BPM + Vector + NeuralFrames
+  image = https://user.uploads.dev/file/2c186a9c689fea6bff5e2f5d42e46618.jpg
+
+style
+  cyberpunk neon, cinematic lighting, 8k
+  dark fantasy, oil painting, moody
+  charcoal sketch, rough lines, artistic
+  photorealistic, street photography, f/1.8
+  anime, cel shaded, vibrant
+  glitch art, datamosh, chromatic aberration
+
+pose
+  sprinting, motion blur, dynamic angle
+  leaning against a wall, relaxed
+  jumping through the air
+  sitting cross-legged, meditation
+  combat stance, weapon ready
