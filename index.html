@@ -49,6 +49,7 @@
   import { TextModule } from 'wazos/modules/TextModule.js';
   import { RigModule } from 'wazos/modules/RigModule.js';
   import { BiomechModule } from 'wazos/modules/BiomechModule.js';
+  import { StyleModule } from 'wazos/modules/StyleModule.js';
   import { ArtStyleInjector } from 'wazos/modules/ArtStyleInjector.js';
   import { InterpModule } from 'wazos/modules/InterpModule.js';
   import { NeuralFramesModule } from 'wazos/modules/NeuralFramesModule.js';
@@ -67,6 +68,7 @@
   rack.addModule(new TextModule('txt-00'));
   rack.addModule(new RigModule('rig-00'));
   rack.addModule(new BiomechModule('bio-00'));
+  rack.addModule(new StyleModule('style-00'));
   rack.addModule(new ArtStyleInjector('stylelib-00'));
   rack.addModule(new InterpModule('interp-00'));
   rack.addModule(new NeuralFramesModule('neural-00'));
@@ -96,7 +98,6 @@
     }
   });
 
-  // Auto-process on load
   setTimeout(() => rack.process(), 100);
 </script>
 </body>
