@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>WazOS Step3 Rack - Complete</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap');
+  :root { --bg:#000; --fg:#0f0; --accent:#ff0; --border:#333; --led:#0f0; }
+    * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:'Roboto Mono',monospace; font-size:11px; overflow:hidden; }
+  #rack { padding:8px; min-height:100vh; background:linear-gradient(#111,#000); overflow-y:auto; }
+  .rack-unit { width:100%; background:#0a0a0a; border:2px solid var(--border); margin:2px 0; border-radius:4px; position:relative; }
+  .rack-header { background:#1a1a1a; padding:4px 8px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+  .rack-led { width:8px; height:8px; background:var(--led); border-radius:50%; box-shadow:0 0 4px var(--led); }
+  .rack-label { font-weight:700; letter-spacing:1px; }
+  .rack-bypass { background:#300; border:1px solid #600; color:#f00; padding:2px 6px; font-size:9px; cursor:pointer; }
+  .rack-bypass.active { background:#060; border-color:#0f0; color:#0f0; }
+  .rack-body { padding:8px; display:grid; grid-template-columns:80px 1fr; gap:4px; align-items:center; }
+  .rack-body label { color:var(--accent); }
+  .rack-body input,.rack-body select,.rack-body button { background:#000; border:1px solid var(--border); color:var(--fg); padding:4px; font-family:inherit; font-size:10px; }
+  .rack-body button:disabled { opacity:0.3; cursor:not-allowed; }
+  .rack-io { display:flex; justify-content:space-between; padding:4px 8px; background:#050505; }
+  .rack-in,.rack-out { color:var(--accent); cursor:crosshair; font-size:14px; }
+  #output { position:fixed; top:8px; right:8px; width:256px; background:#000; border:2px solid var(--accent); padding:4px; max-height:90vh; overflow-y:auto; z-index:10000; }
+  #output img { width:100%; display:block; margin-bottom:2px; border:1px solid #333; }
+  #output .prompt { font-size:9px; color:#888; margin-bottom:4px; word-break:break-all; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "wazos/core/": "https://cdn.jsdelivr.net/gh/wazlavgottodowitz/WazOs@main/Step3/core/",
+    "wazos/modules/": "https://cdn.jsdelivr.net/gh/wazlavgottodowitz/WazOs@main/Step3/modules/",
+    "wazos/plugins/": "https://cdn.jsdelivr.net/gh/wazlavgottodowitz/WazOs@main/Step3/plugins/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="rack"></div>
+<div id="output"></div>
+<script type="module">
+  import { Rack } from 'wazos/core/Rack.js';
+  import { SourceModule } from 'wazos/modules/SourceModule.js';
+  import { AudioModule } from 'wazos/modules/AudioModule.js';
+  import { BPMModule } from 'wazos/modules/BPMModule.js';
+  import { GyroModule } from 'wazos/modules/GyroModule.js';
+  import { VectorModule } from 'wazos/modules/VectorModule.js';
+  import { TextModule } from 'wazos/modules/TextModule.js';
+  import { RigModule } from 'wazos/modules/RigModule.js';
+  import { BiomechModule } from 'wazos/modules/BiomechModule.js';
+  import { ArtStyleInjector } from 'wazos/modules/ArtStyleInjector.js';
+  import { InterpModule } from 'wazos/modules/InterpModule.js';
+  import { NeuralFramesModule } from 'wazos/modules/NeuralFramesModule.js';
+  import { RenderModule } from 'wazos/modules/RenderModule.js';
+  import { LiquiModule } from 'wazos/modules/LiquiModule.js';
+  import { FXModule } from 'wazos/modules/FXModule.js';
+  import { PatchBayModule } from 'wazos/modules/PatchBayModule.js';
+
+  const rack = new Rack(document.getElementById('rack'));
+
+  rack.addModule(new SourceModule('src-00'));
+  rack.addModule(new AudioModule('audio-00'));
+  rack.addModule(new BPMModule('bpm-00'));
+  rack.addModule(new GyroModule('gyro-00'));
+  rack.addModule(new VectorModule('vec-00'));
+  rack.addModule(new TextModule('txt-00'));
+  rack.addModule(new RigModule('rig-00'));
+  rack.addModule(new BiomechModule('bio-00'));
+  rack.addModule(new ArtStyleInjector('stylelib-00'));
+  rack.addModule(new InterpModule('interp-00'));
+  rack.addModule(new NeuralFramesModule('neural-00'));
+  rack.addModule(new RenderModule('render-00'));
+  rack.addModule(new LiquiModule('liqui-00'));
+  rack.addModule(new FXModule('fx-00'));
+  rack.addModule(new PatchBayModule('patch-00'));
+
+  document.addEventListener('wazg:rack-update', () => rack.process());
+
+  document.addEventListener('wazg:frame-ready', e => {
+    window.lastAgents = e.detail.agents;
+    window.lastStyle = e.detail.style;
+    window.lastFrame = e.detail;
+    const out = document.getElementById('output');
+    if(e.detail.imageUrl) {
+      const container = document.createElement('div');
+      const img = document.createElement('img');
+      img.src = e.detail.imageUrl;
+      const prompt = document.createElement('div');
+      prompt.className = 'prompt';
+      prompt.textContent = e.detail.prompt || '';
+      container.appendChild(img);
+      container.appendChild(prompt);
+      out.prepend(container);
+      if(out.children.length > 8) out.lastChild.remove();
+    }
+  });
+
+  // Auto-process on load
+  setTimeout(() => rack.process(), 100);
+</script>
+</body>
+</html>
