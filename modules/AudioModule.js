@@ -350,6 +350,7 @@ export class AudioModule extends Module {
     a.href = url;
     a.download = 'wazos-audio-keyframes.json';
     a.click();
+    URL.revokeObjectURL(url);
   }
 
   async importKeyframes(file) {
@@ -450,4 +451,4 @@ export class AudioModule extends Module {
 
     this.drawWaveform();
   }
-}
+          }
