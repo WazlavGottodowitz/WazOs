@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>wazOS v66.0 - Full Modular</title>
+  <title>wazOS v66.0 - IK Enhanced</title>
   <style>
     body, html { margin:0; padding:0; width:100%; height:100%; background:#0a0a0a; font-family:'Courier New', monospace; overflow:hidden; color:#00ff00; touch-action: manipulation; }
     #waz-container { position:relative; width:100%; height:100vh; }
@@ -26,7 +26,7 @@
         <input type="checkbox" id="chk-guide" checked onchange="toggleGuide()"> 🧠
       </label>
       <div class="ticker-wrapper">
-        <div id="ticker-text">wazOS v66.0 • Full Modular System</div>
+        <div id="ticker-text">wazOS v66.0 • IK Enhanced Modular System</div>
       </div>
     </div>
 
@@ -35,7 +35,7 @@
     </div>
 
     <div id="waz-terminal">
-      <div id="waz-terminal-text">> (BOOT) Starting wazOS v66.0...</div>
+      <div id="waz-terminal-text">> (BOOT) Starting wazOS v66.0 with IK Solver...</div>
     </div>
   </div>
 
@@ -74,7 +74,7 @@
     }
 
     async function bootSystem() {
-      safeLog("SYSTEM", "Starting wazOS v66.0...");
+      safeLog("SYSTEM", "Starting wazOS v66.0 with Inverse Kinematics...");
 
       const modules = [
         'src/core/WazgLogcat.js',
@@ -97,6 +97,7 @@
         'src/ui/WazgProcedural.js',
         'src/ui/WazgIKSystem.js',
         'src/ui/WazgPoseLibrary.js',
+        'src/ui/WazgIKSolver.js',     // ← New IK Solver
         'src/ui/WazgLayout.js'
       ];
 
@@ -105,6 +106,7 @@
         await new Promise(r => setTimeout(r, 250));
       }
 
+      // Initialize modules
       if (window.WazgManager) window.WazgManager.init();
       if (window.WazgGuard) window.WazgGuard.init();
       if (window.WazgAnatomy) window.WazgAnatomy.init();
@@ -123,9 +125,10 @@
       if (window.WazgProcedural) window.WazgProcedural.init();
       if (window.WazgIKSystem) window.WazgIKSystem.init();
       if (window.WazgPoseLibrary) window.WazgPoseLibrary.init();
+      if (window.WazgIKSolver) window.WazgIKSolver.init();        // ← New Solver
       if (window.WazgLayout) window.WazgLayout.init();
 
-      safeLog("SYSTEM", "wazOS v66.0 Full Modular System Ready");
+      safeLog("SYSTEM", "wazOS v66.0 with Inverse Kinematics Solver Ready");
     }
 
     function toggleGuide() {
