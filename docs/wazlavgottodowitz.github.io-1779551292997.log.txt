@@ -1,2 +1,0 @@
-WazgManager.js:10 SYSTEM: VST-Bus aktiv.
-WazOs/:34 WazOs gestartet: VST-Bus verbunden.
