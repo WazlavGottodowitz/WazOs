@@ -9,13 +9,8 @@ window.WazgAccessibility = {
   createLiveDisplay: function() {
     const workspace = document.getElementById("waz-workspace");
     if (!workspace) return;
-
     this.displayElement = document.createElement("div");
-    this.displayElement.style.cssText = `
-      position:absolute; top:15px; right:220px; background:rgba(26,26,26,0.95);
-      border:1px solid #00cc88; color:#00cc88; padding:6px 10px; border-radius:6px;
-      font-size:10px; z-index:270;
-    `;
+    this.displayElement.style.cssText = `position:absolute; top:15px; right:220px; background:rgba(26,26,26,0.95); border:1px solid #00cc88; color:#00cc88; padding:6px 10px; border-radius:6px; font-size:10px; z-index:270;`;
     workspace.appendChild(this.displayElement);
   },
 
