@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WazOS // Nocturne UI (Video Synth Edition)</title>
+  <link rel="stylesheet" href="./css/theme.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <!-- WA-ZOS TAB CONTROL PANEL -->
+  <nav class="waz-tabs" role="tablist">
+    <button class="tab-btn active" data-target="tab-studio" type="button">✦ Studio (T2I)</button>
+    <button class="tab-btn" data-target="tab-timeline" type="button">◉ Timeline & Synth</button>
+    <button class="tab-btn" data-target="tab-maschinenraum" type="button">⚙ Maschinenraum</button>
+  </nav>
+
+  <main class="waz-viewport">
+    
+    <!-- TAB 1: STUDIO (IllusionGen V2) -->
+    <section id="tab-studio" class="tab-panel active">
+      <div class="panel forge-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">IllusionGen V2 Engine</p>
+            <h2>SmartAssist Prompt Forge</h2>
+          </div>
+          <div class="status-pill-group">
+            <span class="status-pill" id="mode-pill">checking</span>
+            <span class="status-pill" id="render-pill">idle</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <textarea id="prompt-input" placeholder="V2 SmartAssist Prompt hier reinhacken..."></textarea>
+        </div>
+        
+        <div class="forge-actions">
+          <button id="generate-button" class="waz-btn primary">GENERATE BASE FRAME</button>
+        </div>
+      </div>
+
+      <div class="panel stage-panel" id="preview-stage">
+        <div class="frame-container">
+          <div class="frame-overlay" id="render-overlay">BUFFER READY</div>
+          <div class="frame-viewport" id="frame-viewport">
+            <img id="render-img" src="" alt="WazOS Render Stage" loading="lazy">
+          </div>
+        </div>
+
+        <div class="under-image-bar">
+          <button id="action-frame0" class="action-btn" type="button">
+            <span class="btn-glyph">📌</span> Use as Frame 0
+          </button>
+          <button id="action-framethrower" class="action-btn thrower" type="button">
+            <span class="btn-glyph">🚀</span> FrameThrower (16x)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TIMELINE & VIDEO SYNTHESIZER -->
+    <section id="tab-timeline" class="tab-panel">
+      <div class="panel queue-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Sequence Buffer</p>
+            <h2>Cluster Timeline (<span id="frame-count-readout">0</span>)</h2>
+          </div>
+          <button id="clear-queue-button" class="waz-btn danger">Clear Buffer</button>
+        </div>
+        <div class="queue-grid" id="queue-grid"></div>
+      </div>
+
+      <div class="panel synth-panel" style="margin-top: 12px;">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Playback & Audio Engine</p>
+            <h2>WazOS Frame Synthesizer</h2>
+          </div>
+          <span class="status-pill" id="synth-status">STANDBY</span>
+        </div>
+
+        <div class="synth-viewport">
+          <canvas id="synth-canvas" style="width: 100%; aspect-ratio: 1; background: #000; border: 1px solid #0b5224; border-radius: 6px;"></canvas>
+        </div>
+
+        <!-- Audio & Video Controls -->
+        <div class="audio-controls" style="margin-top: 12px; padding: 10px; background: #131313; border: 1px solid #1a1e2e; border-radius: 6px;">
+          
+          <!-- Audio Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 10px; color: #73b780; text-transform: uppercase;">Audio Track Injektion</label>
+            <label class="switch" style="position: relative; display: inline-block; width: 34px; height: 20px;">
+              <input type="checkbox" id="synth-audio-toggle" checked style="opacity: 0; width: 0; height: 0;">
+              <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px;">
+                 <span class="knob" style="position: absolute; content: ''; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Onion Skinning Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 10px; color: #00ffcc; text-transform: uppercase;">Onion Skinning (Ghosting)</label>
+            <label class="switch" style="position: relative; display: inline-block; width: 34px; height: 20px;">
+              <input type="checkbox" id="synth-onion-toggle" checked style="opacity: 0; width: 0; height: 0;">
+              <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px;">
+                 <span class="knob" style="position: absolute; content: ''; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+              </span>
+            </label>
+          </div>
+
+          <!-- BPM Slider -->
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 9px; color: #555;">BPM / SPEED</label>
+            <input type="range" id="synth-bpm-slider" min="120" max="160" value="140" style="flex: 1;">
+            <span id="synth-bpm-readout" style="font-size: 10px; color: #00ff66; width: 30px; text-align: right;">140</span>
+          </div>
+        </div>
+
+        <div class="under-image-bar" style="max-width: 100%; margin-top: 8px;">
+          <button id="action-synth-play" class="action-btn" type="button">
+            <span class="btn-glyph">▶️</span> LOOP
+          </button>
+          <button id="action-synth-stop" class="action-btn" type="button">
+            <span class="btn-glyph">⏹️</span> STOP
+          </button>
+          <button id="action-synth-export" class="action-btn primary" type="button" style="border-color: #4ae3ff; color: #4ae3ff;">
+            <span class="btn-glyph">💾</span> RENDER WEBM
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: MASCHINENRAUM -->
+    <section id="tab-maschinenraum" class="tab-panel">
+      <div class="panel settings-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Configuration Matrix</p>
+            <h2>Engine Parameters</h2>
+          </div>
+        </div>
+        <div class="control-grid">
+          <div class="input-group">
+            <label for="negative-input">Negative Prompt</label>
+            <input id="negative-input" type="text">
+          </div>
+          <div class="input-group">
+            <label for="resolution-select">Resolution</label>
+            <select id="resolution-select">
+              <option value="512x512">512x512 (Fast)</option>
+              <option value="768x768" selected>768x768 (Standard)</option>
+              <option value="1024x1024">1024x1024 (HD)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="flags-input">Guerilla Flags</label>
+            <input id="flags-input" type="text" placeholder="--v 5.2 --chaos 8">
+          </div>
+          <div class="input-group">
+            <label for="seed-input">Base Seed</label>
+            <input id="seed-input" type="text" placeholder="Random">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Micro Terminal Log Footer -->
+    <section class="panel console-panel" id="console-panel">
+      <div class="console-log" id="console-log"></div>
+    </section>
+  </main>
+
+  <style>
+    /* CSS Injection for the Toggle Switches */
+    input:checked + .slider { background-color: #00ff66; }
+    input:checked + .slider .knob { transform: translateX(14px); }
+    #synth-onion-toggle:checked + .slider { background-color: #00ffcc; }
+  </style>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
