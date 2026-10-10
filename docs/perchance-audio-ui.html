@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WazOs Audio Beat Sync UI</title>
+  <style>
+    :root {
+      --bg: #0c1014;
+      --panel: #121a1f;
+      --panel-alt: #172028;
+      --line: rgba(255,255,255,0.08);
+      --accent: #72f7c6;
+      --accent-2: #92c7ff;
+      --text: #eef7f2;
+      --muted: #aebec3;
+      --warning: #ffbf75;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    .audio-host {
+      position: relative;
+      overflow: hidden;
+      background: #020508;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      min-height: 260px;
+    }
+
+    audio {
+      width: 100%;
+      display: block;
+      background: #000;
+      border-radius: 12px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    input[type="file"], input[type="range"], input[type="number"], select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--panel-alt);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+      padding: 0;
+      height: 26px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    button {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #4fd6a0);
+      color: #03170f;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: linear-gradient(135deg, var(--accent-2), #77c2ff);
+      color: #041b2d;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .metric {
+      background: var(--panel-alt);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .metric .value {
+      margin-top: 6px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .prompt {
+      margin-top: 18px;
+      min-height: 220px;
+      background: #0a1015;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      color: var(--accent);
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 12px;
+    }
+
+    .beat-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .beat-chip {
+      background: rgba(114, 247, 198, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(114, 247, 198, 0.3);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <section class="panel">
+      <div class="audio-host">
+        <audio id="audio" controls></audio>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">BPM</div>
+          <div class="value" id="bpmValue">0.00</div>
+        </div>
+        <div class="metric">
+          <div class="label">Beat Count</div>
+          <div class="value" id="beatCountValue">0</div>
+        </div>
+        <div class="metric">
+          <div class="label">Loop Start</div>
+          <div class="value" id="loopStartValue">0.00</div>
+        </div>
+        <div class="metric">
+          <div class="label">Loop End</div>
+          <div class="value" id="loopEndValue">0.00</div>
+        </div>
+      </div>
+
+      <div class="beat-list" id="beatList"></div>
+    </section>
+
+    <aside class="panel">
+      <div class="controls">
+        <label>
+          Upload Audio
+          <input id="audioFile" type="file" accept="audio/*" />
+        </label>
+
+        <label>
+          Loop Start (seconds)
+          <input id="loopStart" type="range" min="0" max="100" step="0.1" value="0" />
+        </label>
+
+        <label>
+          Loop End (seconds)
+          <input id="loopEnd" type="range" min="0" max="100" step="0.1" value="8" />
+        </label>
+
+        <label>
+          Frame Count
+          <input id="frameCount" type="number" value="24" min="4" max="128" />
+        </label>
+
+        <label>
+          Shuffle Strength
+          <input id="shuffleStrength" type="range" min="0" max="1" step="0.05" value="0.35" />
+        </label>
+
+        <div class="button-row">
+          <button id="startButton">Analyze</button>
+          <button id="toggleButton" class="secondary">Play</button>
+        </div>
+      </div>
+
+      <div class="prompt" id="promptOutput">
+MASTER SUBJECT: Audio-driven continuity
+[Structure: pulse-locked motion array]
+[Timeline: looped beat-index lock]
+[Beat detection: idle]
+[Loop: 0.00s → 8.00s]
+[Aesthetic: dirty cartoon, physical rhythm, severe contrast]
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const audioEl = document.getElementById('audio');
+    const bpmValue = document.getElementById('bpmValue');
+    const beatCountValue = document.getElementById('beatCountValue');
+    const loopStartValue = document.getElementById('loopStartValue');
+    const loopEndValue = document.getElementById('loopEndValue');
+    const beatList = document.getElementById('beatList');
+    const promptOutput = document.getElementById('promptOutput');
+
+    const loopStartInput = document.getElementById('loopStart');
+    const loopEndInput = document.getElementById('loopEnd');
+    const frameCountInput = document.getElementById('frameCount');
+    const shuffleStrengthInput = document.getElementById('shuffleStrength');
+    const audioFileInput = document.getElementById('audioFile');
+
+    let beats = [];
+    let lastBeatAt = 0;
+    let analyser = null;
+    let audioCtx = null;
+    let sourceNode = null;
+    let frameCount = 24;
+
+    function setLoopUI() {
+      const start = Number(loopStartInput.value);
+      const end = Number(loopEndInput.value);
+      loopStartValue.textContent = start.toFixed(2) + 's';
+      loopEndValue.textContent = end.toFixed(2) + 's';
+      promptOutput.textContent = promptOutput.textContent.replace(/\[Loop: .*?\]/, `[Loop: ${start.toFixed(2)}s → ${end.toFixed(2)}s]`);
+    }
+
+    function updateBeatList() {
+      if (!beats.length) {
+        beatList.innerHTML = '<span class="beat-chip">No beats detected</span>';
+        return;
+      }
+
+      beatList.innerHTML = beats.slice(0, 16).map((beat, idx) => `
+        <span class="beat-chip">#${idx + 1} ${beat.toFixed(2)}s</span>
+      `).join('');
+    }
+
+    function generatePrompt(bpm, beatCount, loopStart, loopEnd, mapping) {
+      const beatSummary = mapping ? mapping.slice(0, 6).map(item => `f${item.frame}@${item.time.toFixed(2)}s`).join(' | ') : 'none';
+
+      promptOutput.textContent = [
+        'MASTER SUBJECT: Audio-driven continuity',
+        '[Structure: pulse-locked motion array]',
+        `[Timeline: BPM ${bpm.toFixed(2)} | ${beatCount} beats detected]`,
+        `[Loop: ${loopStart.toFixed(2)}s → ${loopEnd.toFixed(2)}s]`,
+        `[Beat keyframes: ${beatSummary}]`,
+        '[Aesthetic: dirty cartoon, physical rhythm, severe contrast, beat-driven morph]',
+        '[SYNC MODE: looped pulse-lock with shuffle variance]'
+      ].join('\n');
+    }
+
+    function getBeatMap(frameTotal = 24) {
+      if (!beats.length) return [];
+
+      const map = [];
+      for (let i = 0; i < frameTotal; i++) {
+        const idx = Math.min(beats.length - 1, Math.floor((i / frameTotal) * beats.length));
+        map.push({ frame: i, time: beats[idx] || 0, phase: (i / frameTotal) * 100 });
+      }
+      return map;
+    }
+
+    function estimateBpm() {
+      if (beats.length < 3) return 120;
+      const diffs = [];
+      for (let i = 1; i < beats.length; i++) diffs.push(beats[i] - beats[i - 1]);
+      const mean = diffs.reduce((sum, val) => sum + val, 0) / diffs.length;
+      return mean > 0 ? 60 / mean : 120;
+    }
+
+    async function ensureAudioContext() {
+      if (!audioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioCtx();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        analyser.smoothingTimeConstant = 0.85;
+        sourceNode = audioCtx.createMediaElementSource(audioEl);
+        sourceNode.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+    }
+
+    async function analyzeAudio() {
+      await ensureAudioContext();
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      const newBeats = [];
+      let lastBeat = 0;
+
+      const tick = () => {
+        analyser.getByteFrequencyData(data);
+        let energy = 0;
+        for (let i = 0; i < 60; i++) energy += data[i];
+        const normalized = energy / 60 / 255;
+        const now = performance.now();
+
+        if (normalized > 0.22 && now - lastBeat > 180) {
+          newBeats.push(audioEl.currentTime);
+          lastBeat = now;
+        }
+
+        if (!audioEl.paused) {
+          requestAnimationFrame(tick);
+        }
+      };
+
+      audioEl.currentTime = 0;
+      audioEl.play();
+      requestAnimationFrame(tick);
+
+      setTimeout(() => {
+        beats = newBeats;
+        const bpm = estimateBpm();
+        const mapping = getBeatMap(Number(frameCountInput.value) || 24);
+        bpmValue.textContent = bpm.toFixed(2);
+        beatCountValue.textContent = String(beats.length);
+        updateBeatList();
+        generatePrompt(bpm, beats.length, Number(loopStartInput.value), Number(loopEndInput.value), mapping);
+      }, 2000);
+    }
+
+    audioFileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      audioEl.src = url;
+      promptOutput.textContent = `Loaded: ${file.name}\n[Loop ready]\n[Beat detection waiting for analysis]`;
+    });
+
+    loopStartInput.addEventListener('input', setLoopUI);
+    loopEndInput.addEventListener('input', setLoopUI);
+
+    document.getElementById('startButton').addEventListener('click', analyzeAudio);
+    document.getElementById('toggleButton').addEventListener('click', async () => {
+      if (audioEl.paused) {
+        await audioEl.play();
+        document.getElementById('toggleButton').textContent = 'Pause';
+      } else {
+        audioEl.pause();
+        document.getElementById('toggleButton').textContent = 'Play';
+      }
+    });
+
+    setLoopUI();
+  </script>
+</body>
+</html>
