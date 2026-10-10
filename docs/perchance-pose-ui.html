@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WazOs Pose UI</title>
+  <style>
+    :root {
+      --bg: #0b0e11;
+      --panel: #12181c;
+      --panel-2: #171f23;
+      --accent: #73f7c3;
+      --accent-2: #7ec8ff;
+      --text: #edf4f0;
+      --muted: #a3b7b1;
+      --line: rgba(255,255,255,0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 18px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.28);
+    }
+
+    .video-host {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+      min-height: 520px;
+      border: 1px solid var(--line);
+    }
+
+    #video, #overlay {
+      width: 100%;
+      display: block;
+      min-height: 520px;
+      object-fit: cover;
+      background: #040607;
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .stat {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat .value {
+      margin-top: 6px;
+      font-size: 24px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    input[type="range"], input[type="number"], select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 10px 12px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+      padding: 0;
+      height: 30px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    button {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), #53d196);
+      color: #02150d;
+    }
+
+    button.secondary {
+      background: linear-gradient(135deg, var(--accent-2), #6abaf7);
+      color: #051922;
+    }
+
+    .prompt {
+      margin-top: 18px;
+      min-height: 240px;
+      background: #0a0f12;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--accent);
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <section class="panel">
+      <div class="video-host">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Motion</div>
+          <div class="value" id="motionValue">0.0000</div>
+        </div>
+        <div class="stat">
+          <div class="label">Confidence</div>
+          <div class="value" id="confidenceValue">0.0000</div>
+        </div>
+        <div class="stat">
+          <div class="label">Stability</div>
+          <div class="value" id="stabilityValue">0.0000</div>
+        </div>
+        <div class="stat">
+          <div class="label">Frame</div>
+          <div class="value" id="frameValue">0</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="controls">
+        <label>
+          Motion Intensity
+          <input id="motionIntensity" type="range" min="0" max="1" step="0.01" value="0.74" />
+        </label>
+
+        <label>
+          Visual Noise
+          <input id="visualNoise" type="range" min="0" max="1" step="0.01" value="0.28" />
+        </label>
+
+        <label>
+          Anchor Strength
+          <input id="anchorStrength" type="range" min="0" max="2" step="0.1" value="1.0" />
+        </label>
+
+        <label>
+          Fade Frames
+          <input id="anchorFadeFrames" type="number" min="1" value="45" />
+        </label>
+
+        <label>
+          Ease Mode
+          <select id="easeMode">
+            <option value="quadratic" selected>Quadratic</option>
+            <option value="linear">Linear</option>
+            <option value="cubic">Cubic</option>
+            <option value="exponential">Exponential</option>
+          </select>
+        </label>
+
+        <div class="button-row">
+          <button id="startButton">Start Tracking</button>
+          <button id="freezeButton" class="secondary">Freeze</button>
+        </div>
+      </div>
+
+      <div class="prompt" id="promptOutput">
+MASTER SUBJECT: Live pose continuity
+[Structure: mechanical/biological hybrid array]
+[Timeline: Kinematic phase frame 0]
+[ANCHOR STATUS: Free-form procedural generation]
+[Motion complexity: 0.0000]
+[Decay strategy: quadratic easing over 45 frames]
+[Module stack:]
+  • Motion: isg_004b-neural-gait
+  • Synthesis: isg_005-observer
+  • Orchestration: isg_099-master-compiler
+[Aesthetic: Gritty dirty cartoon, severe high-contrast, fully realized physics]
+      </div>
+    </aside>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("overlay");
+    const ctx = canvas.getContext("2d");
+    const promptOutput = document.getElementById("promptOutput");
+
+    const motionValue = document.getElementById("motionValue");
+    const confidenceValue = document.getElementById("confidenceValue");
+    const stabilityValue = document.getElementById("stabilityValue");
+    const frameValue = document.getElementById("frameValue");
+
+    const motionIntensity = document.getElementById("motionIntensity");
+    const visualNoise = document.getElementById("visualNoise");
+    const anchorStrength = document.getElementById("anchorStrength");
+    const anchorFadeFrames = document.getElementById("anchorFadeFrames");
+    const easeMode = document.getElementById("easeMode");
+
+    let frameIndex = 0;
+    let lastPose = null;
+    let frozen = false;
+
+    function setMetrics(motion, confidence, stability) {
+      motionValue.textContent = Number(motion || 0).toFixed(4);
+      confidenceValue.textContent = Number(confidence || 0).toFixed(4);
+      stabilityValue.textContent = Number(stability || 0).toFixed(4);
+      frameValue.textContent = String(frameIndex);
+    }
+
+    function easeValue(rawDecay, mode) {
+      switch (mode) {
+        case "linear":
+          return rawDecay;
+        case "cubic":
+          return 1 - Math.pow(1 - rawDecay, 3);
+        case "exponential":
+          return rawDecay === 0 ? 0 : 1 - Math.pow(2, -10 * rawDecay);
+        case "quadratic":
+        default:
+          return 1 - Math.pow(1 - rawDecay, 2);
+      }
+    }
+
+    function buildPrompt(model) {
+      const anchorStatus = model.hasAnchor
+        ? `[ANCHOR STATUS: Locked to frame 1 | Weight: ${model.anchorWeight} | Confidence: ${model.anchorConfidence}]`
+        : `[ANCHOR STATUS: Free-form procedural generation | Drift: ${model.driftSensitivity}]`;
+
+      promptOutput.textContent = [
+        "MASTER SUBJECT: Live pose continuity",
+        "[Structure: mechanical/biological hybrid array]",
+        `[Timeline: Kinematic phase frame ${frameIndex}]`,
+        anchorStatus,
+        `[Motion complexity: ${model.driftSensitivity}]`,
+        `[Decay strategy: ${model.decayCurve} easing over ${Number(anchorFadeFrames.value || 45)} frames]`,
+        "[Module stack:]",
+        "  • Motion: isg_004b-neural-gait",
+        "  • Synthesis: isg_005-observer",
+        "  • Orchestration: isg_099-master-compiler",
+        "[Aesthetic: Gritty dirty cartoon, severe high-contrast, fully realized physics]"
+      ].join("\n");
+    }
+
+    function computeModel(landmarks, previousLandmarks) {
+      if (!landmarks || !landmarks.length) {
+        return { hasAnchor: false, anchorWeight: 0, anchorConfidence: 0, driftSensitivity: 0, decayCurve: easeMode.value };
+      }
+
+      const valid = landmarks.filter((p) => p && typeof p.x === "number");
+      const prev = previousLandmarks && previousLandmarks.length ? previousLandmarks : valid;
+
+      const center = valid.reduce((sum, p) => ({ x: sum.x + p.x, y: sum.y + p.y }), { x: 0, y: 0 });
+      const prevCenter = prev.reduce((sum, p) => ({ x: sum.x + (p.x || 0), y: sum.y + (p.y || 0) }), { x: 0, y: 0 });
+
+      const cx = center.x / valid.length;
+      const cy = center.y / valid.length;
+      const px = prevCenter.x / prev.length;
+      const py = prevCenter.y / prev.length;
+
+      const motion = Math.hypot(cx - px, cy - py) * 10;
+      const confidence = valid.reduce((sum, p) => sum + (p.visibility ?? 1), 0) / valid.length;
+      const stability = Math.max(0, 1 - motion * 0.6);
+
+      const fadeFrames = Number(anchorFadeFrames.value || 45);
+      const rawDecay = Math.max(0, 1 - (frameIndex / fadeFrames));
+      const easedDecay = easeValue(rawDecay, easeMode.value);
+
+      const anchorStrengthValue = Number(anchorStrength.value);
+      const anchorWeight = Math.max(0, anchorStrengthValue * easedDecay * (1 + Number(motionIntensity.value) * 0.4));
+      const anchorConfidence = Math.min(1, 0.7 + anchorWeight * 0.3);
+
+      return {
+        hasAnchor: true,
+        anchorWeight: Number(anchorWeight.toFixed(4)),
+        anchorConfidence: Number(anchorConfidence.toFixed(4)),
+        driftSensitivity: Number((Number(motionIntensity.value) * 0.6 + Number(visualNoise.value) * 0.4).toFixed(4)),
+        decayCurve: easeMode.value,
+        motion,
+        confidence,
+        stability
+      };
+    }
+
+    function drawLandmarks(landmarks) {
+      const width = canvas.width || 640;
+      const height = canvas.height || 480;
+
+      ctx.clearRect(0, 0, width, height);
+
+      if (!landmarks || !landmarks.length) return;
+
+      ctx.strokeStyle = "#73f7c3";
+      ctx.lineWidth = 2;
+      ctx.fillStyle = "#73f7c3";
+
+      const connections = [
+        [0,1],[1,2],[2,3],[3,7],[0,4],[4,5],[5,6],[6,8],
+        [9,10],[11,12],[11,13],[13,15],[15,17],[15,19],[17,19],
+        [12,14],[14,16],[16,18],[16,20],[18,20],[11,23],[12,24],
+        [23,24],[23,25],[24,26],[25,27],[26,28],[27,29],[28,30],
+        [29,31],[30,32]
+      ];
+
+      for (const [a,b] of connections) {
+        const p1 = landmarks[a];
+        const p2 = landmarks[b];
+        if (p1 && p2) {
+          ctx.beginPath();
+          ctx.moveTo(p1.x * width, p1.y * height);
+          ctx.lineTo(p2.x * width, p2.y * height);
+          ctx.stroke();
+        }
+      }
+
+      for (const point of landmarks) {
+        if (!point) continue;
+        ctx.beginPath();
+        ctx.arc(point.x * width, point.y * height, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function onResults(results) {
+      if (frozen) return;
+
+      const landmarks = results.poseLandmarks || [];
+      drawLandmarks(landmarks);
+
+      const model = computeModel(landmarks, lastPose || landmarks);
+      lastPose = landmarks;
+      frameIndex += 1;
+
+      setMetrics(model.motion, model.confidence, model.stability);
+      buildPrompt(model);
+    }
+
+    async function startTracking() {
+      const pose = new Pose.Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+      });
+
+      pose.setOptions({
+        modelComplexity: 1,
+        selfieMode: true,
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+      });
+
+      pose.onResults(onResults);
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: 640, height: 480 },
+        audio: false
+      });
+
+      video.srcObject = stream;
+      await video.play();
+
+      const camera = new window.Camera(video, {
+        onFrame: async () => {
+          await pose.send({ image: video });
+        },
+        width: 640,
+        height: 480
+      });
+
+      camera.start();
+    }
+
+    document.getElementById("startButton").addEventListener("click", startTracking);
+    document.getElementById("freezeButton").addEventListener("click", () => {
+      frozen = !frozen;
+      document.getElementById("freezeButton").textContent = frozen ? "Resume" : "Freeze";
+    });
+  </script>
+</body>
+</html>
