@@ -57,6 +57,10 @@ const WazOSShell = (() => {
       if (img) img.src = src;
     });
 
+    if (window.WazgBridge && typeof window.WazgBridge.renderPreview === 'function') {
+      window.WazgBridge.renderPreview(src, state);
+    }
+
     const renderMeta = document.getElementById('render-meta');
     if (renderMeta) renderMeta.textContent = `@ ${state.resolution}`;
   };
@@ -118,6 +122,9 @@ const WazOSShell = (() => {
     syncAllFields();
     persist();
     renderPreview();
+    if (window.WazgBridge && typeof window.WazgBridge.generate === 'function') {
+      window.WazgBridge.generate(value);
+    }
   };
 
   const bindPromptSync = () => {
@@ -133,10 +140,14 @@ const WazOSShell = (() => {
     document.querySelectorAll('[data-generate]').forEach((btn) => {
       btn.addEventListener('click', () => {
         readInputs();
-        state.prompt = getPromptText();
+        const prompt = getPromptText();
+        state.prompt = prompt;
         syncAllFields();
         updateStatus('Generating…', 'loading');
         renderPreview();
+        if (window.WazgBridge && typeof window.WazgBridge.generate === 'function') {
+          window.WazgBridge.generate(prompt);
+        }
         setTimeout(() => updateStatus('Ready', 'ready'), 1100);
         persist();
       });
@@ -169,8 +180,7 @@ const WazOSShell = (() => {
       btn.addEventListener('click', () => setMode(btn.dataset.mode));
     });
 
-    const openAdvanced = document.querySelectorAll('[data-mode="advanced"]').length ? document.querySelectorAll('[data-mode="advanced"]') : [];
-    openAdvanced.forEach((el) => {
+    document.querySelectorAll('[data-mode="advanced"]').forEach((el) => {
       el.addEventListener('click', () => setMode('advanced'));
     });
 
@@ -190,6 +200,10 @@ const WazOSShell = (() => {
     bindIdeas();
     renderPreview();
     updateStatus('Ready', 'ready');
+
+    if (window.WazgBridge && typeof window.WazgBridge.init === 'function') {
+      window.WazgBridge.init();
+    }
   };
 
   return { init, state, setMode, setPrompt, renderPreview, syncAllFields };
