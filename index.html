@@ -1,35 +1,1059 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>WazOs - VST-Biomechanik-Engine</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <style>
-        body { background: #000; color: #0f0; font-family: monospace; margin: 0; }
-        #log-container { height: 100px; overflow-y: scroll; border: 1px solid #333; padding: 5px; }
-        #waz-svg-canvas { width: 100vw; height: 70vh; border: 1px solid #0f0; display: block; }
-        button { background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wazOS — modular creative engine</title>
+  <style>
+    :root {
+      --bg: #050806;
+      --bg-panel: rgba(10, 16, 13, 0.92);
+      --bg-elevated: rgba(14, 22, 18, 0.96);
+      --panel: rgba(17, 25, 20, 0.9);
+      --ink: #dcffe7;
+      --muted: #8cc6a0;
+      --soft: #5bd488;
+      --bright: #78ffb2;
+      --accent: #72ff99;
+      --border: rgba(120, 255, 178, 0.35);
+      --warning: #ffd166;
+      --danger: #ff6b6b;
+      --shadow: 0 18px 52px rgba(0, 0, 0, 0.45);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --header-h: 68px;
+      --footer-h: 52px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(114, 255, 153, 0.08), transparent 38%),
+        linear-gradient(180deg, #050806 0%, #060b08 100%);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1500px, calc(100% - 24px));
+      min-height: calc(100vh - 24px);
+      margin: 12px auto;
+      background: rgba(4, 7, 6, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .topbar {
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 18px;
+      background: rgba(9, 13, 10, 0.92);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(120,255,178,.2), rgba(120,255,178,.7));
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      color: #031108;
+      font-weight: 900;
+      box-shadow: 0 0 20px rgba(120,255,178,0.2);
+    }
+
+    .brand h1 {
+      font-size: 1.08rem;
+      margin: 0;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .mode-btn {
+      appearance: none;
+      border: 1px solid rgba(120,255,178,0.25);
+      background: rgba(14, 22, 18, 0.9);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(180deg, rgba(120,255,178,0.16), rgba(120,255,178,0.08));
+      color: var(--ink);
+      border-color: rgba(120,255,178,0.8);
+      box-shadow: 0 0 20px rgba(120,255,178,0.12);
+    }
+
+    .status-pill {
+      border: 1px solid rgba(120,255,178,0.3);
+      background: rgba(12, 18, 15, 0.9);
+      color: var(--bright);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-height: calc(100vh - var(--header-h) - var(--footer-h) - 24px);
+      background: rgba(7, 11, 8, 0.7);
+    }
+
+    .mode-panel {
+      display: none;
+      min-height: 100%;
+      padding: 20px;
+    }
+
+    .mode-panel.active {
+      display: block;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 20px;
+      min-height: calc(100vh - var(--header-h) - var(--footer-h) - 72px);
+    }
+
+    .panel-box {
+      background: linear-gradient(180deg, rgba(14, 22, 18, 0.94), rgba(10, 14, 12, 0.96));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    .composer {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.7rem;
+      margin: 0;
+    }
+
+    .big-title {
+      margin: 0;
+      font-size: clamp(2rem, 2vw + 1.2rem, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+    }
+
+    .prompt-area {
+      resize: vertical;
+      min-height: 160px;
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(120,255,178,0.35);
+      background: rgba(5,12,9,0.8);
+      padding: 18px 18px 16px;
+      color: var(--ink);
+      font-size: 1.08rem;
+      line-height: 1.5;
+      outline: none;
+      box-shadow: inset 0 0 20px rgba(120,255,178,0.04);
+    }
+
+    .prompt-area:focus {
+      border-color: rgba(120,255,178,0.8);
+      box-shadow: 0 0 0 4px rgba(120,255,178,0.08);
+    }
+
+    .prompt-area::placeholder {
+      color: rgba(220, 255, 231, 0.44);
+    }
+
+    .quick-ideas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .idea-chip {
+      appearance: none;
+      border: 1px solid rgba(120,255,178,0.22);
+      background: rgba(11, 17, 13, 0.85);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .idea-chip:hover {
+      border-color: rgba(120,255,178,0.7);
+      transform: translateY(-1px);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary, .btn-secondary, .btn-ghost {
+      appearance: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover, .btn-ghost:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, rgba(120,255,178,0.85), rgba(97, 220, 139, 0.85));
+      color: #021908;
+      border: 1px solid rgba(120,255,178,0.9);
+      font-weight: 800;
+      padding: 14px 22px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 30px rgba(120,255,178,0.18);
+    }
+
+    .btn-secondary {
+      background: rgba(9, 16, 13, 0.9);
+      border: 1px solid rgba(120,255,178,0.4);
+      color: var(--ink);
+      padding: 12px 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .btn-ghost {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 12px;
+    }
+
+    .info-box {
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(120,255,178,0.25);
+      background: rgba(7, 13, 10, 0.8);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .preview-card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+    }
+
+    .preview-shell {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      min-height: 440px;
+      background:
+        linear-gradient(90deg, rgba(120,255,178,0.04) 1px, transparent 1px),
+        linear-gradient(rgba(120,255,178,0.04) 1px, transparent 1px),
+        #050806;
+      background-size: 18px 18px, 18px 18px, auto;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      max-height: 520px;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+      background: rgba(8, 10, 9, 0.85);
+    }
+
+    .status-text {
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(120,255,178,0.22);
+      color: var(--muted);
+      background: rgba(8, 14, 11, 0.8);
+    }
+
+    .status-text.ready {
+      color: var(--bright);
+      border-color: rgba(120,255,178,0.6);
+    }
+
+    .status-text.loading {
+      color: var(--warning);
+      border-color: rgba(255, 209, 102, 0.45);
+    }
+
+    .status-text::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      display: inline-block;
+      box-shadow: 0 0 18px currentColor;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .field input, .field select, .field textarea {
+      width: 100%;
+      background: rgba(6, 12, 9, 0.82);
+      color: var(--ink);
+      border: 1px solid rgba(120,255,178,0.28);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: rgba(120,255,178,0.8);
+      box-shadow: 0 0 0 4px rgba(120,255,178,0.08);
+    }
+
+    .field textarea {
+      min-height: 118px;
+      resize: vertical;
+    }
+
+    .advanced-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: calc(100vh - var(--header-h) - var(--footer-h) - 72px);
+    }
+
+    .tab-strip {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      border: 1px solid rgba(120,255,178,0.26);
+      background: rgba(9, 16, 13, 0.9);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: rgba(120,255,178,0.14);
+      color: var(--ink);
+      border-color: rgba(120,255,178,0.7);
+    }
+
+    .tab-content {
+      display: none;
+      gap: 16px;
+      min-height: 300px;
+    }
+
+    .tab-content.active {
+      display: grid;
+    }
+
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 16px;
+      min-height: 100%;
+    }
+
+    .side-panel,
+    .right-panel {
+      background: rgba(11, 17, 14, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .render-stage {
+      min-height: 420px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(90deg, rgba(120,255,178,0.04) 1px, transparent 1px), linear-gradient(rgba(120,255,178,0.04) 1px, transparent 1px), #050806;
+      background-size: 18px 18px, 18px 18px, auto;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .render-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .timeline,
+    .core-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mini-frame {
+      width: 96px;
+      height: 96px;
+      background: linear-gradient(135deg, rgba(120,255,178,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(120,255,178,0.26);
+      border-radius: 10px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .mini-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .core-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(8, 14, 11, 0.85);
+      border: 1px solid rgba(120,255,178,0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .core-item .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--bright);
+      box-shadow: 0 0 12px rgba(120,255,178,0.4);
+      display: inline-block;
+    }
+
+    .terminal {
+      position: relative;
+      background: rgba(5, 8, 6, 0.96);
+      border: 1px solid rgba(120,255,178,0.26);
+      border-radius: 14px;
+      height: 150px;
+      overflow: auto;
+      padding: 12px;
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .terminal .title {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 8, 6, 0.94);
+      border-bottom: 1px solid rgba(120,255,178,0.18);
+      color: var(--bright);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      z-index: 1;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .studio-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        flex-wrap: wrap;
+        height: auto;
+      }
+
+      .brand h1 {
+        letter-spacing: 0.08em;
+      }
+
+      .mode-toggle {
+        justify-content: flex-start;
+      }
+
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-primary, .btn-secondary {
+        width: 100%;
+      }
+
+      .row {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="controls">
-        <button onclick="window.WazgManager.dispatch('ADD_NODE', {x: Math.random()*500, y: Math.random()*300}, event)">ADD JOINT</button>
-        <button onclick="window.WazgManager.dispatch('CLEAR_WORKSPACE', null, event)">CLEAR ALL</button>
-    </div>
-    <div id="log-container"></div>
-    <svg id="waz-svg-canvas"></svg>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">W</div>
+        <h1>wazOS</h1>
+      </div>
 
-    <script src="src/plugins/isg_997_WazLogger.js"></script>
-    <script src="src/core/WazgManager.js"></script>
-    <script src="src/core/WazgAnatomy.js"></script>
-    <script>
-        window.onload = () => {
-            try {
-                window.WazgManager.init();
-                window.WazgAnatomy.init();
-                console.log("System bereit.");
-            } catch(e) { console.error("Start-Fehler:", e); }
-        };
-    </script>
+      <div class="mode-toggle" aria-label="mode selector">
+        <button class="mode-btn active" data-mode="beginner">simple</button>
+        <button class="mode-btn" data-mode="control">control</button>
+        <button class="mode-btn" data-mode="advanced">advanced</button>
+      </div>
+
+      <div class="status-pill" id="mode-status">simple</div>
+    </header>
+
+    <main class="workspace">
+      <section class="mode-panel active" data-mode="beginner">
+        <div class="hero">
+          <div class="panel-box composer">
+            <p class="eyebrow">creative generation</p>
+            <h2 class="big-title">What do you want to create?</h2>
+
+            <textarea id="prompt-beginner" class="prompt-area" placeholder="Example: A biomechanical fox with glowing joints, cyberpunk style, cinematic lighting"></textarea>
+
+            <div class="quick-ideas">
+              <button class="idea-chip" data-idea="A cybernetic skull with neon green tubes, cinematic lighting, highly detailed">Neon Skull</button>
+              <button class="idea-chip" data-idea="A biomechanical fox with glowing joints, anime style, heroic pose">Biomech Fox</button>
+              <button class="idea-chip" data-idea="A steampunk robot mechanic, brass gears, intricate detail, dark studio lighting">Steampunk Robot</button>
+            </div>
+
+            <div class="row">
+              <button class="btn-primary" data-generate>Generate</button>
+              <button class="btn-secondary" id="show-more-controls">More control</button>
+            </div>
+
+            <div class="info-box">
+              Start with a clear idea. Using specific words like <strong>cyberpunk</strong>, <strong>anime</strong>, <strong>biomechanical</strong>, or <strong>steampunk</strong> usually gives much stronger results.
+            </div>
+          </div>
+
+          <aside class="panel-box preview-card">
+            <div class="preview-header">
+              <span>Live Preview</span>
+              <span id="generation-status" class="status-text ready">Ready to render</span>
+            </div>
+
+            <div class="preview-shell">
+              <img id="render-image" class="preview-image" alt="Generated preview" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" />
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="mode-panel" data-mode="control">
+        <div class="hero">
+          <div class="panel-box composer">
+            <p class="eyebrow">control mode</p>
+            <h2 class="big-title">Refine the concept</h2>
+
+            <div class="field">
+              <label for="prompt-control">Prompt</label>
+              <textarea id="prompt-control" data-sync-prompt class="prompt-area" placeholder="Describe the image you want to generate"></textarea>
+            </div>
+
+            <div class="control-grid">
+              <div class="field">
+                <label for="style-control">Style</label>
+                <select id="style-control" data-sync-prompt>
+                  <option value="">Raw</option>
+                  <option value="cyberpunk style, neon colors">Cyberpunk</option>
+                  <option value="anime style, studio ghibli">Anime</option>
+                  <option value="photorealistic, ultra detailed">Photorealistic</option>
+                  <option value="steampunk, brass, mechanical detail">Steampunk</option>
+                  <option value="biomechanical, organic-metal fusion">Biomechanical</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="resolution-control">Resolution</label>
+                <select id="resolution-control" data-sync-prompt>
+                  <option value="512x512">512 × 512</option>
+                  <option value="768x768" selected>768 × 768</option>
+                  <option value="1024x1024">1024 × 1024</option>
+                  <option value="1536x1536">1536 × 1536</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="negative-control">Negative prompt</label>
+                <input id="negative-control" data-sync-prompt value="blurry, low quality, watermark, text, distorted" />
+              </div>
+
+              <div class="field">
+                <label for="batch-control">Variations</label>
+                <select id="batch-control" data-sync-prompt>
+                  <option value="1">1 variation</option>
+                  <option value="2">2 variations</option>
+                  <option value="3">3 variations</option>
+                  <option value="4">4 variations</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <button class="btn-primary" data-generate>Generate</button>
+              <button class="btn-ghost" data-mode="advanced">Open advanced view</button>
+            </div>
+          </div>
+
+          <aside class="panel-box preview-card">
+            <div class="preview-header">
+              <span>render</span>
+              <span class="status-text ready" id="control-status">ready</span>
+            </div>
+
+            <div class="preview-shell">
+              <img id="render-image-control" class="preview-image" alt="Preview" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" />
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="mode-panel" data-mode="advanced">
+        <div class="advanced-panel">
+          <div class="tab-strip">
+            <button class="tab-btn active" data-tab="studio">Studio</button>
+            <button class="tab-btn" data-tab="core">Core</button>
+            <button class="tab-btn" data-tab="timeline">Timeline</button>
+          </div>
+
+          <div class="tab-content active" data-tab="studio">
+            <div class="studio-layout">
+              <aside class="side-panel">
+                <div class="field">
+                  <label for="prompt-advanced">Prompt</label>
+                  <textarea id="prompt-advanced" data-sync-prompt placeholder="Describe the desired output"></textarea>
+                </div>
+
+                <div class="field">
+                  <label for="negative-advanced">Negative prompt</label>
+                  <input id="negative-advanced" data-sync-prompt value="blurry, low quality, watermark, text" />
+                </div>
+
+                <div class="control-grid">
+                  <div class="field">
+                    <label for="style-advanced">Style</label>
+                    <select id="style-advanced" data-sync-prompt>
+                      <option value="">Raw</option>
+                      <option value="cyberpunk style, neon colors">Cyberpunk</option>
+                      <option value="anime style, studio ghibli">Anime</option>
+                      <option value="photorealistic, ultra detailed">Photorealistic</option>
+                      <option value="steampunk, brass, mechanical detail">Steampunk</option>
+                      <option value="biomechanical, organic-metal fusion">Biomechanical</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="resolution-advanced">Resolution</label>
+                    <select id="resolution-advanced" data-sync-prompt>
+                      <option value="512x512">512 × 512</option>
+                      <option value="768x768" selected>768 × 768</option>
+                      <option value="1024x1024">1024 × 1024</option>
+                      <option value="1536x1536">1536 × 1536</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="batch-advanced">Batch</label>
+                    <select id="batch-advanced" data-sync-prompt>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="zoom-control">Zoom</label>
+                    <input id="zoom-control" type="range" min="60" max="160" value="100" data-sync-prompt />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <button class="btn-primary" data-generate>Generate</button>
+                  <button class="btn-secondary">Throw Frame</button>
+                </div>
+              </aside>
+
+              <div class="right-panel">
+                <div class="preview-header">
+                  <span>buffer</span>
+                  <span id="advanced-status" class="status-text ready">ready</span>
+                </div>
+
+                <div class="render-stage">
+                  <img id="render-image-advanced" alt="Advanced preview" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" />
+                </div>
+
+                <div class="terminal">
+                  <div class="title">system log</div>
+                  <div id="system-log">&gt; wazOS core online.<br>&gt; rendering pipeline warm.<br>&gt; prompt queue ready.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" data-tab="core">
+            <div class="side-panel">
+              <p class="eyebrow">Module chain</p>
+              <div class="core-list">
+                <div class="core-item"><span><span class="dot"></span> Bridge</span><strong>ready</strong></div>
+                <div class="core-item"><span><span class="dot"></span> Renderer</span><strong>live</strong></div>
+                <div class="core-item"><span><span class="dot"></span> Storage</span><strong>synced</strong></div>
+                <div class="core-item"><span><span class="dot"></span> Logger</span><strong>active</strong></div>
+                <div class="core-item"><span><span class="dot"></span> Anatomy</span><strong>stable</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" data-tab="timeline">
+            <div class="side-panel" style="width:100%;">
+              <p class="eyebrow">Frame timeline</p>
+              <div class="timeline">
+                <div class="mini-frame">#01</div>
+                <div class="mini-frame">#02</div>
+                <div class="mini-frame">#03</div>
+                <div class="mini-frame">#04</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="topbar" style="height: var(--footer-h); border-top: 1px solid var(--border); border-bottom: none; background: rgba(8, 13, 10, 0.85);">
+      <div class="status-pill" id="render-meta">@ 768×768</div>
+      <div class="status-pill">batch: 1</div>
+      <div class="status-pill">mode: live</div>
+    </footer>
+  </div>
+
+  <script>
+    const state = {
+      mode: 'beginner',
+      activeTab: 'studio',
+      prompt: 'A cybernetic skull with neon green tubes, highly detailed, cinematic lighting',
+      style: 'cyberpunk style, neon colors',
+      negative: 'blurry, low quality, watermark, text, distorted',
+      resolution: '768x768',
+      batch: 1,
+      zoom: 100
+    };
+
+    const demoPrompts = [
+      'A cybernetic skull with neon green tubes, highly detailed, cinematic lighting',
+      'A biomechanical fox with glowing joints, anime style, heroic pose',
+      'A steampunk robot mechanic with brass gears, intricate details, dark studio lighting'
+    ];
+
+    function syncAllFields() {
+      const promptFields = [
+        document.getElementById('prompt-beginner'),
+        document.getElementById('prompt-control'),
+        document.getElementById('prompt-advanced')
+      ].filter(Boolean);
+
+      promptFields.forEach(field => {
+        field.value = state.prompt;
+      });
+
+      const styleControl = document.getElementById('style-control');
+      const styleAdvanced = document.getElementById('style-advanced');
+      if (styleControl) styleControl.value = state.style || '';
+      if (styleAdvanced) styleAdvanced.value = state.style || '';
+
+      const resolutionControl = document.getElementById('resolution-control');
+      const resolutionAdvanced = document.getElementById('resolution-advanced');
+      if (resolutionControl) resolutionControl.value = state.resolution;
+      if (resolutionAdvanced) resolutionAdvanced.value = state.resolution;
+
+      const negativeControl = document.getElementById('negative-control');
+      const negativeAdvanced = document.getElementById('negative-advanced');
+      if (negativeControl) negativeControl.value = state.negative;
+      if (negativeAdvanced) negativeAdvanced.value = state.negative;
+
+      const batchControl = document.getElementById('batch-control');
+      const batchAdvanced = document.getElementById('batch-advanced');
+      if (batchControl) batchControl.value = String(state.batch || 1);
+      if (batchAdvanced) batchAdvanced.value = String(state.batch || 1);
+
+      const zoomControl = document.getElementById('zoom-control');
+      if (zoomControl) zoomControl.value = String(state.zoom || 100);
+    }
+
+    function renderMode() {
+      document.querySelectorAll('.mode-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.dataset.mode === state.mode);
+      });
+
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === state.mode);
+      });
+
+      const modeStatus = document.getElementById('mode-status');
+      if (modeStatus) modeStatus.textContent = state.mode;
+    }
+
+    function renderPreview() {
+      const prompt = (state.prompt || '').trim();
+      const encoded = encodeURIComponent(prompt || demoPrompts[0]);
+      const [w, h] = (state.resolution || '768x768').split('x');
+
+      const src = `https://image.pollinations.ai/prompt/${encoded}?width=${w}&height=${h}&seed=${Date.now()}&model=flux&nologo=true`;
+
+      const previews = [
+        document.getElementById('render-image'),
+        document.getElementById('render-image-control'),
+        document.getElementById('render-image-advanced')
+      ].filter(Boolean);
+
+      previews.forEach(img => {
+        img.src = src;
+      });
+
+      const renderMeta = document.getElementById('render-meta');
+      if (renderMeta) renderMeta.textContent = `@ ${state.resolution}`;
+    }
+
+    function updateStatus(label, type = 'ready') {
+      const statusEls = [
+        document.getElementById('generation-status'),
+        document.getElementById('control-status'),
+        document.getElementById('advanced-status')
+      ].filter(Boolean);
+
+      statusEls.forEach(el => {
+        el.textContent = label;
+        el.classList.remove('ready', 'loading');
+        el.classList.add(type === 'loading' ? 'loading' : 'ready');
+      });
+    }
+
+    function readFromInputs() {
+      const prompt = document.getElementById('prompt-beginner') || document.getElementById('prompt-control') || document.getElementById('prompt-advanced');
+      if (prompt) state.prompt = prompt.value.trim() || demoPrompts[0];
+
+      const style = document.getElementById('style-control') || document.getElementById('style-advanced');
+      state.style = style ? style.value : '';
+
+      const resolution = document.getElementById('resolution-control') || document.getElementById('resolution-advanced');
+      state.resolution = resolution ? resolution.value : '768x768';
+
+      const negative = document.getElementById('negative-control') || document.getElementById('negative-advanced');
+      state.negative = negative ? negative.value : 'blurry, low quality';
+
+      const batch = document.getElementById('batch-control') || document.getElementById('batch-advanced');
+      state.batch = batch ? Number(batch.value || 1) : 1;
+
+      const zoom = document.getElementById('zoom-control');
+      state.zoom = zoom ? Number(zoom.value || 100) : 100;
+    }
+
+    function setPrompt(value) {
+      state.prompt = value;
+      syncAllFields();
+      renderPreview();
+    }
+
+    function bindModeButtons() {
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.mode = btn.dataset.mode;
+          renderMode();
+        });
+      });
+
+      document.querySelectorAll('[data-mode="advanced"]').forEach(el => {
+        el.addEventListener('click', () => {
+          state.mode = 'advanced';
+          renderMode();
+        });
+      });
+    }
+
+    function bindGenerateButtons() {
+      document.querySelectorAll('[data-generate]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          readFromInputs();
+          const safePrompt = state.prompt || demoPrompts[0];
+          state.prompt = safePrompt;
+          syncAllFields();
+          updateStatus('Generating…', 'loading');
+          renderPreview();
+          setTimeout(() => updateStatus('Ready', 'ready'), 1100);
+        });
+      });
+    }
+
+    function bindTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeTab = btn.dataset.tab;
+          document.querySelectorAll('.tab-btn').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.tab === state.activeTab);
+          });
+          document.querySelectorAll('.tab-content').forEach(panel => {
+            panel.classList.toggle('active', panel.dataset.tab === state.activeTab);
+          });
+        });
+      });
+    }
+
+    function bindPromptSync() {
+      document.querySelectorAll('[data-sync-prompt]').forEach(input => {
+        input.addEventListener('input', () => {
+          readFromInputs();
+          renderPreview();
+        });
+      });
+    }
+
+    function bindIdeas() {
+      document.querySelectorAll('.idea-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          setPrompt(chip.dataset.idea);
+        });
+      });
+    }
+
+    function init() {
+      syncAllFields();
+      renderMode();
+      renderPreview();
+      bindModeButtons();
+      bindGenerateButtons();
+      bindTabs();
+      bindPromptSync();
+      bindIdeas();
+
+      document.getElementById('show-more-controls').addEventListener('click', () => {
+        state.mode = 'control';
+        renderMode();
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
